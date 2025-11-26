@@ -6,6 +6,7 @@ import { registerProgressHandlers } from './ipc/progress';
 import { registerNotesHandlers } from './ipc/notes';
 import { registerFilesHandlers } from './ipc/files';
 import { registerSettingsHandlers } from './ipc/settings';
+import { registerStatsHandlers } from './ipc/stats';
 import { initializeVault } from './services/vault';
 
 let mainWindow: BrowserWindow | null = null;
@@ -61,6 +62,7 @@ async function initialize(): Promise<void> {
   registerNotesHandlers(ipcMain);
   registerFilesHandlers(ipcMain);
   registerSettingsHandlers(ipcMain);
+  registerStatsHandlers(ipcMain);
 }
 
 app.whenReady().then(async () => {

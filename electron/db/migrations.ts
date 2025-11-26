@@ -25,6 +25,24 @@ const migrations: Migration[] = [
       });
     },
   },
+  {
+    id: 2,
+    name: 'add_reading_sessions',
+    up: (db: Database.Database) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS reading_sessions (
+          id TEXT PRIMARY KEY,
+          bookId TEXT NOT NULL,
+          startTime TEXT NOT NULL,
+          endTime TEXT,
+          durationMinutes INTEGER DEFAULT 0,
+          FOREIGN KEY (bookId) REFERENCES books(id) ON DELETE CASCADE
+        )
+      `);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_reading_sessions_bookId ON reading_sessions(bookId)');
+      db.exec('CREATE INDEX IF NOT EXISTS idx_reading_sessions_startTime ON reading_sessions(startTime)');
+    },
+  },
 ];
 
 export function runMigrations(db: Database.Database): void {

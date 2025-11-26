@@ -5,10 +5,12 @@ import { getDatabase } from '../db';
 import {
   copyBookToVault,
   saveBookMeta,
+  saveCover,
 } from './vault';
 import {
   extractPdfMetadata,
   extractEpubMetadata,
+  extractEpubCover,
   extractTxtMetadata,
 } from './coverExtractor';
 
@@ -62,6 +64,20 @@ export async function importBook(sourcePath: string): Promise<BookImportResult> 
     // Copy file to vault
     const vaultPath = await copyBookToVault(sourcePath, id, type);
 
+    // Try to extract cover image
+    let coverPath: string | null = null;
+    if (type === 'epub') {
+      try {
+        const coverBuffer = await extractEpubCover(sourcePath);
+        if (coverBuffer) {
+          coverPath = await saveCover(id, coverBuffer);
+          console.log('Saved EPUB cover to:', coverPath);
+        }
+      } catch (coverError) {
+        console.warn('Failed to extract cover:', coverError);
+      }
+    }
+
     // Create book record
     const now = new Date().toISOString();
     const book: Book = {
@@ -70,7 +86,7 @@ export async function importBook(sourcePath: string): Promise<BookImportResult> 
       author: metadata.author || 'Unknown',
       type,
       pages: metadata.pages,
-      coverPath: null, // Cover will be generated in renderer
+      coverPath,
       filePath: vaultPath,
       importedAt: now,
       lastOpenedAt: null,
@@ -124,6 +140,41 @@ export function updateBookLastOpened(id: string): void {
   const db = getDatabase();
   const stmt = db.prepare('UPDATE books SET lastOpenedAt = ? WHERE id = ?');
   stmt.run(new Date().toISOString(), id);
+}
+
+export function updateBook(
+  id: string,
+  updates: Partial<Pick<Book, 'title' | 'author'>>
+): Book | null {
+  const db = getDatabase();
+  
+  // Build dynamic update query
+  const fields: string[] = [];
+  const values: (string | null)[] = [];
+  
+  if (updates.title !== undefined) {
+    fields.push('title = ?');
+    values.push(updates.title);
+  }
+  
+  if (updates.author !== undefined) {
+    fields.push('author = ?');
+    values.push(updates.author);
+  }
+  
+  if (fields.length === 0) {
+    return getBook(id);
+  }
+  
+  values.push(id);
+  const stmt = db.prepare(`UPDATE books SET ${fields.join(', ')} WHERE id = ?`);
+  const result = stmt.run(...values);
+  
+  if (result.changes > 0) {
+    return getBook(id);
+  }
+  
+  return null;
 }
 
 export function deleteBook(id: string): boolean {

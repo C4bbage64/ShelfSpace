@@ -4,13 +4,18 @@ An offline-first desktop reading application built with Electron, React, and Typ
 
 ## Features
 
-- 📚 Import and manage PDF, EPUB, and TXT books
-- 📖 Built-in readers with customizable themes
-- 💾 Automatic reading progress tracking
-- 📝 Notes and highlights (coming soon)
-- 🎨 Dark, Light, and Sepia themes
-- 🔍 Search and filter your library
-- 💻 Works completely offline
+- 📚 **Import and manage** PDF, EPUB, and TXT books
+- 📖 **Built-in readers** with customizable themes
+- 💾 **Automatic progress tracking** - picks up where you left off
+- 📝 **Notes and highlights** with color options
+- ⏱️ **Reading statistics** - track time spent reading
+- ✏️ **Edit book metadata** - update title and author
+- 🎨 **Dark, Light, and Sepia themes**
+- 🔍 **Search and filter** your library
+- 📊 **Multiple view modes** - grid and list views
+- 🖱️ **Drag and drop import** - easily add books
+- 🖼️ **Automatic cover extraction** for EPUB files
+- 💻 **Works completely offline**
 
 ## Tech Stack
 
@@ -68,7 +73,7 @@ pnpm package:linux  # Linux
 
 ## Project Structure
 
-```
+```text
 shelfspace/
 ├── electron/           # Electron main process
 │   ├── main.ts         # App entry point
@@ -98,6 +103,7 @@ All data is stored locally:
 - **Books**: `{userData}/shelfspace/books/{uuid}/`
 
 Where `{userData}` is:
+
 - Windows: `%APPDATA%`
 - macOS: `~/Library/Application Support`
 - Linux: `~/.config`
@@ -112,6 +118,31 @@ Where `{userData}` is:
 | `→` / `PageDown` | Next page |
 | `Ctrl/Cmd + +` | Zoom in (PDF) |
 | `Ctrl/Cmd + -` | Zoom out (PDF) |
+
+### Library
+
+| Shortcut | Action |
+|----------|--------|
+| `Drag & Drop` | Import files |
+
+## Recent Changes
+
+### v0.1.0
+
+- ✅ Book import (PDF, EPUB, TXT)
+- ✅ PDF reader with page navigation and zoom
+- ✅ EPUB reader with chapter navigation
+- ✅ TXT reader with scroll progress
+- ✅ SQLite database for library management
+- ✅ Reading progress persistence
+- ✅ Highlights with color picker
+- ✅ Edit book metadata (title, author)
+- ✅ EPUB cover extraction
+- ✅ Reading session tracking
+- ✅ Search and filter library
+- ✅ Grid and list view modes
+- ✅ Drag and drop import
+- ✅ Delete books
 
 ## License
 

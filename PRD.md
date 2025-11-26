@@ -125,7 +125,7 @@ This ensures:
 
 ## 4. Core Features (MVP)
 
-### 4.1 Book Importing
+### 4.1 Book Importing ✅
 
 - Drag & drop or file picker
 - Supported formats: `pdf`, `epub`, `txt`
@@ -136,7 +136,7 @@ This ensures:
   4. Extract metadata (title, author)
   5. Store entry in SQLite
 
-### 4.2 Library View
+### 4.2 Library View ✅
 
 - Grid + list view
 - Sort:
@@ -149,28 +149,29 @@ This ensures:
   - Title
   - Author
   - Last opened
+- Edit book metadata (title, author)
+- Delete books
 
-### 4.3 PDF Reader
+### 4.3 PDF Reader ✅
 
 - Powered by PDF.js
 - Features:
-  - Scroll mode
   - Page view mode
   - Zoom
-  - Themes (Light / Dark / Sepia)
+  - Page navigation
   - Save progress on page change
+  - Keyboard shortcuts
 
-### 4.4 EPUB Reader
+### 4.4 EPUB Reader ✅
 
 - Powered by EPUB.js
 - Features:
   - Reflowable text
-  - Font size adjustment
-  - Themes
   - Progress tracking
   - TOC navigation
+  - Chapter navigation
 
-### 4.5 Reading Progress
+### 4.5 Reading Progress ✅
 
 Stored in SQLite as:
 
@@ -180,12 +181,20 @@ location (page number or EPUB CFI)
 timestamp
 ```
 
-### 4.6 Notes & Highlights
+### 4.6 Notes & Highlights ✅
 
-- Markdown notes per book
-- Highlights stored with location reference
-- Side panel for notes
-- Editable and searchable
+- Highlights with color picker (Yellow, Green, Blue, Pink, Orange)
+- Side panel for viewing highlights
+- Highlight text selection
+- Delete highlights
+- Location reference stored
+
+### 4.7 Reading Statistics ✅
+
+- Reading session tracking
+- Time spent reading per book
+- Overall reading stats
+- Session history
 
 ---
 

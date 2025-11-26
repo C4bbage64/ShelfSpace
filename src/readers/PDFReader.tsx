@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import { TextLayer } from 'pdfjs-dist';
 import 'pdfjs-dist/build/pdf.worker.min.mjs';
 import './PDFReader.css';
 
@@ -18,6 +19,7 @@ interface PDFReaderProps {
 function PDFReader({ fileData, initialPage = 1, onProgressUpdate }: PDFReaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const textLayerRef = useRef<HTMLDivElement>(null);
   const [pdf, setPdf] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [numPages, setNumPages] = useState(0);
@@ -72,7 +74,7 @@ function PDFReader({ fileData, initialPage = 1, onProgressUpdate }: PDFReaderPro
   // Render current page
   useEffect(() => {
     async function renderPage() {
-      if (!pdf || !canvasRef.current) return;
+      if (!pdf || !canvasRef.current || !textLayerRef.current) return;
 
       try {
         const page = await pdf.getPage(currentPage);
@@ -92,6 +94,24 @@ function PDFReader({ fileData, initialPage = 1, onProgressUpdate }: PDFReaderPro
         };
         
         await page.render(renderContext).promise;
+        
+        // Render text layer for selection
+        const textContent = await page.getTextContent();
+        const textLayerDiv = textLayerRef.current;
+        
+        // Clear previous text layer
+        textLayerDiv.innerHTML = '';
+        textLayerDiv.style.width = `${viewport.width}px`;
+        textLayerDiv.style.height = `${viewport.height}px`;
+        
+        // Create text layer
+        const textLayer = new TextLayer({
+          textContentSource: textContent,
+          container: textLayerDiv,
+          viewport: viewport,
+        });
+        
+        await textLayer.render();
       } catch (err) {
         console.error('Failed to render page:', err);
       }
@@ -240,7 +260,10 @@ function PDFReader({ fileData, initialPage = 1, onProgressUpdate }: PDFReaderPro
       </div>
 
       <div className="pdf-container" ref={containerRef}>
-        <canvas ref={canvasRef} className="pdf-canvas" />
+        <div className="pdf-page-wrapper">
+          <canvas ref={canvasRef} className="pdf-canvas" />
+          <div ref={textLayerRef} className="pdf-text-layer" />
+        </div>
       </div>
     </div>
   );

@@ -3,13 +3,15 @@ import type { Book, BookImportResult } from './book';
 import type { ReadingProgress } from './progress';
 import type { Note, Highlight } from './notes';
 import type { Settings } from './settings';
+import type { ReadingStats, BookReadingStats, ReadingSession } from './stats';
 
-// IPC Channel names
+// IPC channel names
 export const IPC_CHANNELS = {
   // Books
   BOOKS_IMPORT: 'books:import',
   BOOKS_GET_ALL: 'books:getAll',
   BOOKS_GET: 'books:get',
+  BOOKS_UPDATE: 'books:update',
   BOOKS_DELETE: 'books:delete',
   
   // Progress
@@ -25,6 +27,12 @@ export const IPC_CHANNELS = {
   HIGHLIGHTS_SAVE: 'highlights:save',
   HIGHLIGHTS_GET_ALL: 'highlights:getAll',
   HIGHLIGHTS_DELETE: 'highlights:delete',
+  
+  // Reading Stats
+  STATS_START_SESSION: 'stats:startSession',
+  STATS_END_SESSION: 'stats:endSession',
+  STATS_GET_BOOK: 'stats:getBook',
+  STATS_GET_OVERALL: 'stats:getOverall',
   
   // Files
   FILE_GET_PATH: 'file:getPath',
@@ -42,6 +50,7 @@ export interface ElectronAPI {
   importBook: (filePath: string) => Promise<BookImportResult>;
   getBooks: () => Promise<Book[]>;
   getBook: (id: string) => Promise<Book | null>;
+  updateBook: (id: string, updates: Partial<Pick<Book, 'title' | 'author'>>) => Promise<Book | null>;
   deleteBook: (id: string) => Promise<boolean>;
   
   // Progress
@@ -66,6 +75,12 @@ export interface ElectronAPI {
   // Settings
   getSettings: () => Promise<Settings>;
   saveSettings: (settings: Partial<Settings>) => Promise<Settings>;
+  
+  // Reading Stats
+  startReadingSession: (bookId: string) => Promise<ReadingSession>;
+  endReadingSession: (sessionId: string) => Promise<ReadingSession | null>;
+  getBookStats: (bookId: string) => Promise<BookReadingStats>;
+  getOverallStats: () => Promise<ReadingStats>;
 }
 
 // Augment window object

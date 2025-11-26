@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useBooksStore } from '../stores/booksStore';
 import BookGrid from '../components/BookGrid';
 import SearchBar from '../components/SearchBar';
+import { EditBookModal } from '../components/EditBookModal';
+import type { Book } from '../../shared/types/book';
 import './Library.css';
 
 function Library() {
@@ -11,7 +13,8 @@ function Library() {
     books, 
     isLoading, 
     loadBooks, 
-    importBooks, 
+    importBooks,
+    updateBook, 
     deleteBook,
     searchQuery,
     setSearchQuery,
@@ -23,6 +26,7 @@ function Library() {
   } = useBooksStore();
   
   const [isDragging, setIsDragging] = useState(false);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   useEffect(() => {
     loadBooks();
@@ -37,6 +41,14 @@ function Library() {
 
   const handleBookClick = (bookId: string) => {
     navigate(`/reader/${bookId}`);
+  };
+
+  const handleEditBook = (book: Book) => {
+    setEditingBook(book);
+  };
+
+  const handleSaveBook = async (id: string, updates: { title?: string; author?: string }) => {
+    await updateBook(id, updates);
   };
 
   const handleDeleteBook = async (bookId: string) => {
@@ -179,6 +191,7 @@ function Library() {
           books={filteredBooks} 
           viewMode={viewMode}
           onBookClick={handleBookClick}
+          onEditBook={handleEditBook}
           onDeleteBook={handleDeleteBook}
         />
       )}
@@ -193,6 +206,15 @@ function Library() {
           <p>Drop files to import</p>
         </div>
       </div>
+
+      {editingBook && (
+        <EditBookModal
+          book={editingBook}
+          isOpen={true}
+          onClose={() => setEditingBook(null)}
+          onSave={handleSaveBook}
+        />
+      )}
     </div>
   );
 }

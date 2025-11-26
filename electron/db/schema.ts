@@ -57,6 +57,17 @@ export const SCHEMA = {
     )
   `,
   
+  readingSessions: `
+    CREATE TABLE IF NOT EXISTS reading_sessions (
+      id TEXT PRIMARY KEY,
+      bookId TEXT NOT NULL,
+      startTime TEXT NOT NULL,
+      endTime TEXT,
+      durationMinutes INTEGER DEFAULT 0,
+      FOREIGN KEY (bookId) REFERENCES books(id) ON DELETE CASCADE
+    )
+  `,
+  
   migrations: `
     CREATE TABLE IF NOT EXISTS migrations (
       id INTEGER PRIMARY KEY,
@@ -73,6 +84,8 @@ export const INDEXES = [
   'CREATE INDEX IF NOT EXISTS idx_books_lastOpenedAt ON books(lastOpenedAt)',
   'CREATE INDEX IF NOT EXISTS idx_notes_bookId ON notes(bookId)',
   'CREATE INDEX IF NOT EXISTS idx_highlights_bookId ON highlights(bookId)',
+  'CREATE INDEX IF NOT EXISTS idx_reading_sessions_bookId ON reading_sessions(bookId)',
+  'CREATE INDEX IF NOT EXISTS idx_reading_sessions_startTime ON reading_sessions(startTime)',
 ];
 
 export function createSchema(db: Database.Database): void {

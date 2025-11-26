@@ -67,9 +67,42 @@
   padding: var(--space-lg);
 }
 
-.pdf-canvas {
+.pdf-page-wrapper {
+  position: relative;
   box-shadow: 0 4px 20px var(--shadow);
+}
+
+.pdf-canvas {
+  display: block;
   background-color: white;
+}
+
+.pdf-text-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.pdf-text-layer span {
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0% 0%;
+  color: transparent;
+  cursor: text;
+}
+
+.pdf-text-layer span::selection {
+  background: rgba(0, 0, 255, 0.3);
+}
+
+.pdf-text-layer .highlight {
+  margin: -1px;
+  padding: 1px;
+  background-color: rgba(255, 255, 0, 0.4);
+  border-radius: 4px;
 }
 
 .pdf-loading,

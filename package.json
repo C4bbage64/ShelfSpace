@@ -18,7 +18,13 @@
     "lint": "tsc --noEmit",
     "clean": "rimraf dist dist-electron release"
   },
-  "keywords": ["electron", "react", "ebook", "reader", "offline"],
+  "keywords": [
+    "electron",
+    "react",
+    "ebook",
+    "reader",
+    "offline"
+  ],
   "author": "",
   "license": "MIT",
   "packageManager": "pnpm@10.23.0",
@@ -37,6 +43,7 @@
     "wait-on": "^9.0.3"
   },
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "better-sqlite3": "^12.4.6",
     "epubjs": "^0.3.93",
     "pdfjs-dist": "^5.4.394",

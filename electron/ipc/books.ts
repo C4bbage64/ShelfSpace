@@ -1,10 +1,12 @@
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
+import type { Book } from '../../shared/types/book';
 import { IPC_CHANNELS } from '../../shared/types/ipc';
 import {
   importBook,
   getAllBooks,
   getBook,
+  updateBook,
   deleteBook as deleteBookService,
 } from '../services/bookImporter';
 import { deleteBookFromVault } from '../services/vault';
@@ -37,6 +39,14 @@ export function registerBooksHandlers(ipcMain: IpcMain): void {
     
     return deleted;
   });
+
+  // Update a book
+  ipcMain.handle(
+    IPC_CHANNELS.BOOKS_UPDATE,
+    async (_event, id: string, updates: Partial<Pick<Book, 'title' | 'author'>>) => {
+      return updateBook(id, updates);
+    }
+  );
 
   // Open file dialog for importing books
   ipcMain.handle(IPC_CHANNELS.FILE_OPEN_DIALOG, async () => {

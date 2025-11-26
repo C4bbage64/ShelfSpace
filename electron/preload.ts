@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC_CHANNELS, type ElectronAPI } from '../shared/types/ipc';
+import type { Book } from '../shared/types/book';
 import type { ReadingProgress } from '../shared/types/progress';
 import type { Note, Highlight } from '../shared/types/notes';
 import type { Settings } from '../shared/types/settings';
@@ -12,6 +13,8 @@ const api: ElectronAPI = {
     ipcRenderer.invoke(IPC_CHANNELS.BOOKS_GET_ALL),
   getBook: (id: string) => 
     ipcRenderer.invoke(IPC_CHANNELS.BOOKS_GET, id),
+  updateBook: (id: string, updates: Partial<Pick<Book, 'title' | 'author'>>) =>
+    ipcRenderer.invoke(IPC_CHANNELS.BOOKS_UPDATE, id, updates),
   deleteBook: (id: string) => 
     ipcRenderer.invoke(IPC_CHANNELS.BOOKS_DELETE, id),
 
@@ -50,6 +53,16 @@ const api: ElectronAPI = {
     ipcRenderer.invoke(IPC_CHANNELS.SETTINGS_GET),
   saveSettings: (settings: Partial<Settings>) => 
     ipcRenderer.invoke(IPC_CHANNELS.SETTINGS_SAVE, settings),
+    
+  // Reading Stats
+  startReadingSession: (bookId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.STATS_START_SESSION, bookId),
+  endReadingSession: (sessionId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.STATS_END_SESSION, sessionId),
+  getBookStats: (bookId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.STATS_GET_BOOK, bookId),
+  getOverallStats: () =>
+    ipcRenderer.invoke(IPC_CHANNELS.STATS_GET_OVERALL),
 };
 
 contextBridge.exposeInMainWorld('api', api);

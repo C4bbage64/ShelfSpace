@@ -11,6 +11,7 @@ interface BooksState {
   // Actions
   loadBooks: () => Promise<void>;
   importBooks: (filePaths: string[]) => Promise<void>;
+  updateBook: (id: string, updates: { title?: string; author?: string }) => Promise<void>;
   deleteBook: (id: string) => Promise<void>;
   setSearchQuery: (query: string) => void;
   setSortBy: (sort: SortOption) => void;
@@ -50,6 +51,22 @@ export const useBooksStore = create<BooksState>((set, get) => ({
       } catch (error) {
         console.error('Failed to import book:', error);
       }
+    }
+  },
+
+  updateBook: async (id: string, updates: { title?: string; author?: string }) => {
+    try {
+      const updatedBook = await window.api.updateBook(id, updates);
+      if (updatedBook) {
+        set((state) => ({
+          books: state.books.map((book) =>
+            book.id === id ? updatedBook : book
+          ),
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to update book:', error);
+      throw error;
     }
   },
 

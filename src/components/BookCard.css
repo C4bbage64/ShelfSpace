@@ -57,6 +57,7 @@
   align-items: flex-end;
   justify-content: flex-end;
   padding: var(--space-sm);
+  gap: var(--space-xs);
   opacity: 0;
   transition: opacity var(--transition-fast);
 }
@@ -65,6 +66,7 @@
   opacity: 1;
 }
 
+.book-edit,
 .book-delete {
   width: 32px;
   height: 32px;
@@ -80,10 +82,15 @@
   transition: background-color var(--transition-fast);
 }
 
+.book-edit:hover {
+  background-color: var(--accent-secondary, #4f46e5);
+}
+
 .book-delete:hover {
   background-color: var(--accent);
 }
 
+.book-edit svg,
 .book-delete svg {
   width: 16px;
   height: 16px;
@@ -181,9 +188,21 @@
   color: var(--text-secondary);
 }
 
+.book-actions-list {
+  display: flex;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+.book-card.list .book-edit,
 .book-card.list .book-delete {
   background-color: transparent;
   color: var(--text-secondary);
+}
+
+.book-card.list .book-edit:hover {
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--accent-secondary, #4f46e5);
 }
 
 .book-card.list .book-delete:hover {
