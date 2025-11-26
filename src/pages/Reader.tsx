@@ -11,7 +11,7 @@ function Reader() {
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
-  const [filePath, setFilePath] = useState<string | null>(null);
+  const [fileData, setFileData] = useState<string | null>(null);
   const [progress, setProgress] = useState<ReadingProgress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,9 +25,9 @@ function Reader() {
       }
 
       try {
-        const [bookData, pathData, progressData] = await Promise.all([
+        const [bookData, data, progressData] = await Promise.all([
           window.api.getBook(bookId),
-          window.api.getFilePath(bookId),
+          window.api.readFile(bookId),
           window.api.getProgress(bookId),
         ]);
 
@@ -37,8 +37,14 @@ function Reader() {
           return;
         }
 
+        if (!data) {
+          setError('Could not read book file');
+          setIsLoading(false);
+          return;
+        }
+
         setBook(bookData);
-        setFilePath(pathData);
+        setFileData(data);
         setProgress(progressData);
         setIsLoading(false);
       } catch (err) {
@@ -81,7 +87,7 @@ function Reader() {
     );
   }
 
-  if (error || !book || !filePath) {
+  if (error || !book || !fileData) {
     return (
       <div className="reader-page">
         <div className="reader-error">
@@ -117,21 +123,21 @@ function Reader() {
       <div className="reader-content">
         {book.type === 'pdf' && (
           <PDFReader
-            filePath={filePath}
+            fileData={fileData}
             initialPage={progress?.location ? parseInt(progress.location, 10) : 1}
             onProgressUpdate={handleProgressUpdate}
           />
         )}
         {book.type === 'epub' && (
           <EPUBReader
-            filePath={filePath}
+            fileData={fileData}
             initialLocation={progress?.location}
             onProgressUpdate={handleProgressUpdate}
           />
         )}
         {book.type === 'txt' && (
           <TXTReader
-            filePath={filePath}
+            fileData={fileData}
             initialProgress={progress?.percentage || 0}
             onProgressUpdate={handleProgressUpdate}
           />

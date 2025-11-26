@@ -3,12 +3,12 @@ import ePub, { Book, Rendition } from 'epubjs';
 import './EPUBReader.css';
 
 interface EPUBReaderProps {
-  filePath: string;
+  fileData: string; // base64 encoded
   initialLocation?: string;
   onProgressUpdate: (location: string, percentage: number) => void;
 }
 
-function EPUBReader({ filePath, initialLocation, onProgressUpdate }: EPUBReaderProps) {
+function EPUBReader({ fileData, initialLocation, onProgressUpdate }: EPUBReaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<Book | null>(null);
   const renditionRef = useRef<Rendition | null>(null);
@@ -26,8 +26,15 @@ function EPUBReader({ filePath, initialLocation, onProgressUpdate }: EPUBReaderP
         setIsLoading(true);
         setError(null);
 
-        // Create new book instance
-        const book = ePub(`file://${filePath}`);
+        // Decode base64 to ArrayBuffer
+        const binaryString = atob(fileData);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create new book instance from ArrayBuffer
+        const book = ePub(bytes.buffer as ArrayBuffer);
         bookRef.current = book;
 
         // Wait for book to be ready
@@ -85,7 +92,7 @@ function EPUBReader({ filePath, initialLocation, onProgressUpdate }: EPUBReaderP
         bookRef.current.destroy();
       }
     };
-  }, [filePath]);
+  }, [fileData]);
 
   const nextPage = useCallback(() => {
     renditionRef.current?.next();

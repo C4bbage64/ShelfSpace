@@ -28,6 +28,7 @@ export const IPC_CHANNELS = {
   
   // Files
   FILE_GET_PATH: 'file:getPath',
+  FILE_READ: 'file:read',
   FILE_OPEN_DIALOG: 'file:openDialog',
   
   // Settings
@@ -59,6 +60,7 @@ export interface ElectronAPI {
   
   // Files
   getFilePath: (bookId: string) => Promise<string | null>;
+  readFile: (bookId: string) => Promise<string | null>;
   openFileDialog: () => Promise<string[] | null>;
   
   // Settings

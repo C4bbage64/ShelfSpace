@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import 'pdfjs-dist/build/pdf.worker.min.mjs';
 import './PDFReader.css';
 
-// Set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set up PDF.js worker using the bundled worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 interface PDFReaderProps {
-  filePath: string;
+  fileData: string; // base64 encoded
   initialPage?: number;
   onProgressUpdate: (location: string, percentage: number) => void;
 }
 
-function PDFReader({ filePath, initialPage = 1, onProgressUpdate }: PDFReaderProps) {
+function PDFReader({ fileData, initialPage = 1, onProgressUpdate }: PDFReaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [pdf, setPdf] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
@@ -28,8 +32,19 @@ function PDFReader({ filePath, initialPage = 1, onProgressUpdate }: PDFReaderPro
         setIsLoading(true);
         setError(null);
         
-        const loadingTask = pdfjsLib.getDocument(`file://${filePath}`);
+        // Decode base64 to Uint8Array
+        const binaryString = atob(fileData);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        console.log('PDF data decoded, size:', bytes.length);
+        
+        const loadingTask = pdfjsLib.getDocument({ data: bytes });
         const pdfDoc = await loadingTask.promise;
+        
+        console.log('PDF loaded successfully, pages:', pdfDoc.numPages);
         
         setPdf(pdfDoc);
         setNumPages(pdfDoc.numPages);
@@ -37,19 +52,22 @@ function PDFReader({ filePath, initialPage = 1, onProgressUpdate }: PDFReaderPro
         setIsLoading(false);
       } catch (err) {
         console.error('Failed to load PDF:', err);
-        setError('Failed to load PDF file');
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(`Failed to load PDF: ${errorMessage}`);
         setIsLoading(false);
       }
     }
 
-    loadPdf();
+    if (fileData) {
+      loadPdf();
+    }
 
     return () => {
       if (pdf) {
         pdf.destroy();
       }
     };
-  }, [filePath]);
+  }, [fileData]);
 
   // Render current page
   useEffect(() => {

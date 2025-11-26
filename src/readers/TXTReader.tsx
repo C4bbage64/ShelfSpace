@@ -2,12 +2,12 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import './TXTReader.css';
 
 interface TXTReaderProps {
-  filePath: string;
+  fileData: string; // base64 encoded
   initialProgress?: number;
   onProgressUpdate: (location: string, percentage: number) => void;
 }
 
-function TXTReader({ filePath, initialProgress = 0, onProgressUpdate }: TXTReaderProps) {
+function TXTReader({ fileData, initialProgress = 0, onProgressUpdate }: TXTReaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -15,28 +15,28 @@ function TXTReader({ filePath, initialProgress = 0, onProgressUpdate }: TXTReade
 
   // Load text file
   useEffect(() => {
-    async function loadText() {
-      try {
-        setIsLoading(true);
-        setError(null);
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        const response = await fetch(`file://${filePath}`);
-        if (!response.ok) {
-          throw new Error('Failed to load file');
-        }
-        
-        const text = await response.text();
-        setContent(text);
-        setIsLoading(false);
-      } catch (err) {
-        console.error('Failed to load text file:', err);
-        setError('Failed to load text file');
-        setIsLoading(false);
+      // Decode base64 to string
+      const binaryString = atob(fileData);
+      // Convert to UTF-8
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
       }
+      const decoder = new TextDecoder('utf-8');
+      const text = decoder.decode(bytes);
+      
+      setContent(text);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Failed to load text file:', err);
+      setError('Failed to load text file');
+      setIsLoading(false);
     }
-
-    loadText();
-  }, [filePath]);
+  }, [fileData]);
 
   // Restore scroll position after content loads
   useEffect(() => {

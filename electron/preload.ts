@@ -40,6 +40,8 @@ const api: ElectronAPI = {
   // Files
   getFilePath: (bookId: string) => 
     ipcRenderer.invoke(IPC_CHANNELS.FILE_GET_PATH, bookId),
+  readFile: (bookId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.FILE_READ, bookId),
   openFileDialog: () => 
     ipcRenderer.invoke(IPC_CHANNELS.FILE_OPEN_DIALOG),
 
