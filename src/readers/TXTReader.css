@@ -1,0 +1,45 @@
+.txt-reader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+.txt-container {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-xl);
+}
+
+.txt-content {
+  max-width: 700px;
+  margin: 0 auto;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: var(--font-size-md);
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+.txt-content p {
+  margin-bottom: var(--space-md);
+}
+
+.txt-content p.empty-line {
+  height: var(--space-lg);
+}
+
+.txt-loading,
+.txt-error {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  color: var(--text-secondary);
+}
+
+.txt-error {
+  color: var(--accent);
+}

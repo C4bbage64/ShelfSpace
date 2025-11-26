@@ -321,6 +321,70 @@ theme, viewMode
 - App build script (.exe, .dmg)
 - Documentation and developer setup guide
 
+---
+
+## 11. Project Structure
+
+```text
+shelfspace/
+├── electron/                    # Electron main process
+│   ├── main.ts                  # App entry point, window creation
+│   ├── preload.ts               # Secure bridge to renderer
+│   ├── ipc/                     # IPC handlers
+│   │   ├── books.ts             # Book import/delete/list handlers
+│   │   ├── progress.ts          # Reading progress handlers
+│   │   ├── notes.ts             # Notes CRUD handlers
+│   │   └── files.ts             # File path handlers
+│   ├── db/                      # Database layer
+│   │   ├── index.ts             # SQLite connection
+│   │   ├── schema.ts            # Table definitions
+│   │   └── migrations/          # Database migrations
+│   └── services/                # Business logic
+│       ├── bookImporter.ts      # Import, extract cover/metadata
+│       ├── coverExtractor.ts    # PDF/EPUB cover extraction
+│       └── vault.ts             # Book vault file management
+│
+├── src/                         # React + Vite renderer
+│   ├── main.tsx                 # React entry point
+│   ├── App.tsx                  # Root component, routing
+│   ├── components/              # Reusable UI components
+│   │   ├── BookCard.tsx         # Library book card
+│   │   ├── BookGrid.tsx         # Grid/list view
+│   │   ├── SearchBar.tsx        # Search input
+│   │   ├── Sidebar.tsx          # Navigation sidebar
+│   │   └── ThemeToggle.tsx      # Theme switcher
+│   ├── pages/                   # Route pages
+│   │   ├── Library.tsx          # Main library view
+│   │   ├── Reader.tsx           # Book reader container
+│   │   └── Settings.tsx         # App settings
+│   ├── readers/                 # Reader components
+│   │   ├── PDFReader.tsx        # PDF.js viewer
+│   │   ├── EPUBReader.tsx       # EPUB.js viewer
+│   │   └── TXTReader.tsx        # Plain text viewer
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useBooks.ts          # Book data fetching
+│   │   ├── useProgress.ts       # Progress tracking
+│   │   └── useNotes.ts          # Notes management
+│   ├── stores/                  # State management
+│   │   └── appStore.ts          # Global app state
+│   ├── styles/                  # Styling
+│   │   ├── globals.css          # Global styles
+│   │   └── themes.css           # Theme variables
+│   ├── types/                   # TypeScript types
+│   │   └── index.ts             # Shared type definitions
+│   └── utils/                   # Utility functions
+│       └── helpers.ts           # Common helpers
+│
+├── resources/                   # Static assets for Electron
+│   └── icons/                   # App icons
+│
+├── package.json                 # Dependencies & scripts
+├── pnpm-lock.yaml               # pnpm lockfile
+├── tsconfig.json                # TypeScript config
+├── vite.config.ts               # Vite configuration
+├── electron-builder.json        # Electron packaging config
+└── README.md                    # Project documentation
+```
 
 ---
 

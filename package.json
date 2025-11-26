@@ -1,13 +1,49 @@
 {
   "name": "shelfspace",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "An offline-first desktop reading application",
+  "main": "dist-electron/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently \"pnpm run dev:vite\" \"pnpm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && NODE_ENV=development electron .",
+    "build": "pnpm run build:vite && pnpm run build:electron",
+    "build:vite": "vite build",
+    "build:electron": "tsc -p tsconfig.node.json",
+    "preview": "vite preview",
+    "package": "pnpm run build && electron-builder",
+    "package:win": "pnpm run build && electron-builder --win",
+    "package:mac": "pnpm run build && electron-builder --mac",
+    "package:linux": "pnpm run build && electron-builder --linux",
+    "lint": "tsc --noEmit",
+    "clean": "rimraf dist dist-electron release"
   },
-  "keywords": [],
+  "keywords": ["electron", "react", "ebook", "reader", "offline"],
   "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.23.0"
+  "license": "MIT",
+  "packageManager": "pnpm@10.23.0",
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^11.0.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "concurrently": "^9.2.1",
+    "electron": "^39.2.4",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "wait-on": "^9.0.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.6",
+    "epubjs": "^0.3.93",
+    "pdfjs-dist": "^5.4.394",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.6",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.8"
+  }
 }
