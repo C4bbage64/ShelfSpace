@@ -10,7 +10,8 @@ import { initializeVault } from './services/vault';
 
 let mainWindow: BrowserWindow | null = null;
 
-const isDev = process.env.NODE_ENV === 'development';
+// Check if running in development by looking for Vite dev server
+const isDev = !app.isPackaged;
 
 async function createWindow(): Promise<void> {
   mainWindow = new BrowserWindow({

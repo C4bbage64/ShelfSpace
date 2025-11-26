@@ -1,0 +1,7 @@
+ignoredBuiltDependencies:
+  - better-sqlite3
+  - core-js
+  - electron
+  - electron-winstaller
+  - es5-ext
+  - esbuild

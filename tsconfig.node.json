@@ -3,10 +3,9 @@
     "composite": true,
     "target": "ES2022",
     "lib": ["ES2022"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
     "strict": true,
     "strictNullChecks": true,
@@ -23,5 +22,5 @@
       "@shared/*": ["shared/*"]
     }
   },
-  "include": ["electron/**/*", "shared/**/*", "vite.config.ts"]
+  "include": ["electron/**/*", "shared/**/*"]
 }
