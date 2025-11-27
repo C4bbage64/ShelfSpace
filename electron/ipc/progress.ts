@@ -8,24 +8,32 @@ export function registerProgressHandlers(ipcMain: IpcMain): void {
   ipcMain.handle(
     IPC_CHANNELS.PROGRESS_SAVE,
     async (_event, progress: ReadingProgress) => {
-      const db = getDatabase();
-      const stmt = db.prepare(`
-        INSERT OR REPLACE INTO progress (bookId, location, percentage, timestamp)
-        VALUES (?, ?, ?, ?)
-      `);
+      try {
+        const db = getDatabase();
+        const timestamp = new Date().toISOString();
+        
+        // Save to progress table
+        const stmt = db.prepare(`
+          INSERT OR REPLACE INTO progress (bookId, location, percentage, timestamp)
+          VALUES (?, ?, ?, ?)
+        `);
+        stmt.run(
+          progress.bookId,
+          progress.location,
+          progress.percentage,
+          timestamp
+        );
 
-      stmt.run(
-        progress.bookId,
-        progress.location,
-        progress.percentage,
-        new Date().toISOString()
-      );
-
-      // Update book's lastOpenedAt and progress column
-      const updateBook = db.prepare(
-        'UPDATE books SET lastOpenedAt = ?, progress = ? WHERE id = ?'
-      );
-      updateBook.run(new Date().toISOString(), progress.percentage / 100, progress.bookId);
+        // Update book's lastOpenedAt and progress column (convert percentage to 0-1)
+        const progressValue = Math.min(Math.max(progress.percentage / 100, 0), 1);
+        const updateBook = db.prepare(
+          'UPDATE books SET lastOpenedAt = ?, progress = ? WHERE id = ?'
+        );
+        updateBook.run(timestamp, progressValue, progress.bookId);
+      } catch (error) {
+        console.error('Failed to save progress:', error);
+        throw error;
+      }
     }
   );
 

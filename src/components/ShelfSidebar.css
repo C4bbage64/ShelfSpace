@@ -1,16 +1,18 @@
 .shelf-sidebar {
   width: 250px;
-  height: 100%;
-  background: var(--sidebar-bg, #1e1e2e);
-  border-right: 1px solid var(--border-color, #2a2a3a);
+  min-width: 250px;
+  height: 100vh;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   overflow-y: auto;
 }
 
 .sidebar-section {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border-color, #2a2a3a);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .sidebar-section:last-child {
@@ -22,59 +24,59 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  margin-bottom: 0.25rem;
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-xs);
 }
 
 .sidebar-section-header h3 {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-secondary, #a0a0b0);
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .add-shelf-btn {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
-  background: var(--button-bg, #3b82f6);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
   color: white;
   border: none;
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-fast);
 }
 
 .add-shelf-btn:hover {
-  background: var(--button-hover, #2563eb);
+  background: var(--accent-hover);
 }
 
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.625rem 1rem;
-  color: var(--text-primary, #e0e0e8);
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--text-primary);
   text-decoration: none;
-  transition: background 0.15s;
+  transition: background var(--transition-fast);
   cursor: pointer;
 }
 
 .sidebar-item:hover {
-  background: var(--hover-bg, #2a2a3a);
+  background: var(--bg-tertiary);
 }
 
 .sidebar-item.active {
-  background: var(--active-bg, #3b82f622);
-  color: var(--accent-color, #3b82f6);
+  background: var(--bg-tertiary);
+  color: var(--accent);
   font-weight: 500;
 }
 
 .sidebar-item.drag-over {
-  background: var(--accent-color, #3b82f6);
+  background: var(--accent);
   color: white;
   transform: scale(1.02);
 }
@@ -90,73 +92,73 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .sidebar-count {
-  font-size: 0.75rem;
-  color: var(--text-secondary, #a0a0b0);
-  background: var(--count-bg, #2a2a3a);
-  padding: 0.125rem 0.5rem;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  padding: var(--space-xs) var(--space-sm);
   border-radius: 10px;
   min-width: 24px;
   text-align: center;
 }
 
 .empty-shelves {
-  padding: 1.5rem 1rem;
+  padding: var(--space-lg) var(--space-md);
   text-align: center;
 }
 
 .empty-shelves p {
-  color: var(--text-secondary, #a0a0b0);
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-md);
 }
 
 .create-first-shelf {
-  padding: 0.5rem 1rem;
-  background: var(--button-bg, #3b82f6);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--accent);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-fast);
 }
 
 .create-first-shelf:hover {
-  background: var(--button-hover, #2563eb);
+  background: var(--accent-hover);
 }
 
 .context-menu {
   position: fixed;
-  background: var(--dropdown-bg, #2a2a3a);
-  border: 1px solid var(--border-color, #3a3a4a);
-  border-radius: 6px;
-  padding: 0.25rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs);
+  box-shadow: var(--shadow);
   z-index: 1000;
 }
 
 .context-menu button {
   display: block;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: var(--space-sm) var(--space-md);
   background: transparent;
   border: none;
-  color: var(--text-primary, #e0e0e8);
+  color: var(--text-primary);
   text-align: left;
   cursor: pointer;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  transition: background 0.15s;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  transition: background var(--transition-fast);
 }
 
 .context-menu button:hover {
-  background: var(--hover-bg, #3a3a4a);
+  background: var(--bg-secondary);
 }
 
 .context-menu button:active {
-  background: var(--active-bg, #4a4a5a);
+  background: var(--bg-primary);
 }

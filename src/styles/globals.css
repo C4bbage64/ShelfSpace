@@ -106,6 +106,7 @@ body {
   flex: 1;
   overflow: auto;
   background-color: var(--bg-primary);
+  min-width: 0; /* Allows flex item to shrink below content size */
 }
 
 /* Scrollbar */

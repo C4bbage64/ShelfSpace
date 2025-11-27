@@ -24,7 +24,10 @@ const SMART_SHELVES: SmartShelfConfig[] = [
     icon: '📖',
     color: '#f59e0b',
     query: (books: Book[]) => {
-      return books.filter((b: any) => b.progress > 0 && b.progress < 1);
+      return books.filter((b: any) => {
+        const progress = b.progress ?? 0;
+        return progress > 0 && progress < 1;
+      });
     },
   },
   {
@@ -33,7 +36,10 @@ const SMART_SHELVES: SmartShelfConfig[] = [
     icon: '📚',
     color: '#6366f1',
     query: (books: Book[]) => {
-      return books.filter((b: any) => b.progress === 0 || b.progress === null);
+      return books.filter((b: any) => {
+        const progress = b.progress ?? 0;
+        return progress === 0;
+      });
     },
   },
   {
@@ -42,7 +48,10 @@ const SMART_SHELVES: SmartShelfConfig[] = [
     icon: '✅',
     color: '#22c55e',
     query: (books: Book[]) => {
-      return books.filter((b: any) => b.progress >= 1);
+      return books.filter((b: any) => {
+        const progress = b.progress ?? 0;
+        return progress >= 1;
+      });
     },
   },
   {
@@ -223,7 +232,7 @@ export function registerShelfHandlers(): void {
   ipcMain.handle(IpcChannel.SHELVES_GET_SMART, async () => {
     try {
       const db = getDatabase();
-      const allBooks = db.prepare('SELECT * FROM books').all() as Book[];
+      const allBooks = db.prepare('SELECT * FROM books ORDER BY importedAt DESC').all() as Book[];
       
       const smartShelves = SMART_SHELVES.map((config) => {
         const books = config.query(allBooks);
@@ -234,6 +243,7 @@ export function registerShelfHandlers(): void {
           color: config.color,
           bookCount: books.length,
           isSmart: true,
+          createdAt: new Date().toISOString(), // Add required field
         };
       });
       
@@ -248,14 +258,15 @@ export function registerShelfHandlers(): void {
   ipcMain.handle(IpcChannel.SHELVES_GET_SMART_BOOKS, async (_, smartShelfId: string) => {
     try {
       const db = getDatabase();
-      const allBooks = db.prepare('SELECT * FROM books').all() as Book[];
+      const allBooks = db.prepare('SELECT * FROM books ORDER BY importedAt DESC').all() as Book[];
       
       const config = SMART_SHELVES.find((s) => s.id === smartShelfId);
       if (!config) {
         throw new Error(`Smart shelf not found: ${smartShelfId}`);
       }
       
-      return config.query(allBooks);
+      const filteredBooks = config.query(allBooks);
+      return filteredBooks;
     } catch (error) {
       console.error('Failed to get smart shelf books:', error);
       throw error;
