@@ -355,6 +355,208 @@ interface ReadingStats {
 
 ---
 
+## Shelves API
+
+### `getAllShelves(): Promise<ShelfWithBookCount[]>`
+
+Retrieves all user-created shelves with book counts.
+
+**Returns:**
+- `Promise<ShelfWithBookCount[]>` - Array of shelves with bookCount property
+
+**Example:**
+```typescript
+const shelves = await window.api.getAllShelves()
+shelves.forEach(shelf => {
+  console.log(`${shelf.name}: ${shelf.bookCount} books`)
+})
+```
+
+**IPC Channel:** `SHELVES_GET_ALL`
+
+---
+
+### `createShelf(name: string, color?: string, icon?: string): Promise<Shelf>`
+
+Creates a new shelf.
+
+**Parameters:**
+- `name` (string) - Shelf name
+- `color` (string, optional) - Hex color (default: '#3b82f6')
+- `icon` (string, optional) - Emoji icon (default: '📚')
+
+**Returns:**
+- `Promise<Shelf>` - Created shelf object
+
+**Example:**
+```typescript
+const shelf = await window.api.createShelf('Science Fiction', '#8b5cf6', '🚀')
+console.log(shelf.id)
+```
+
+**IPC Channel:** `SHELVES_CREATE`
+
+---
+
+### `updateShelf(shelfId: string, updates: Partial<Shelf>): Promise<void>`
+
+Updates shelf properties.
+
+**Parameters:**
+- `shelfId` (string) - Shelf UUID
+- `updates` (Partial<Shelf>) - Fields to update (name, color, icon)
+
+**Example:**
+```typescript
+await window.api.updateShelf(shelfId, {
+  name: 'Sci-Fi Classics',
+  color: '#10b981'
+})
+```
+
+**IPC Channel:** `SHELVES_UPDATE`
+
+---
+
+### `deleteShelf(shelfId: string): Promise<void>`
+
+Permanently deletes a shelf (books are not deleted).
+
+**Parameters:**
+- `shelfId` (string) - Shelf UUID
+
+**Example:**
+```typescript
+await window.api.deleteShelf(shelfId)
+```
+
+**IPC Channel:** `SHELVES_DELETE`
+
+**Side Effects:**
+- Removes all book-shelf associations
+- Does not delete books themselves
+
+---
+
+### `getShelfBooks(shelfId: string): Promise<Book[]>`
+
+Retrieves all books in a shelf.
+
+**Parameters:**
+- `shelfId` (string) - Shelf UUID
+
+**Returns:**
+- `Promise<Book[]>` - Array of books in the shelf
+
+**Example:**
+```typescript
+const books = await window.api.getShelfBooks(shelfId)
+console.log(`${books.length} books in shelf`)
+```
+
+**IPC Channel:** `SHELVES_GET_BOOKS`
+
+---
+
+### `addBookToShelf(shelfId: string, bookId: string): Promise<void>`
+
+Adds a book to a shelf.
+
+**Parameters:**
+- `shelfId` (string) - Shelf UUID
+- `bookId` (string) - Book UUID
+
+**Example:**
+```typescript
+await window.api.addBookToShelf(shelfId, bookId)
+```
+
+**IPC Channel:** `SHELVES_ADD_BOOK`
+
+**Note:** Silently ignores if book is already in shelf (uses INSERT OR IGNORE).
+
+---
+
+### `removeBookFromShelf(shelfId: string, bookId: string): Promise<void>`
+
+Removes a book from a shelf.
+
+**Parameters:**
+- `shelfId` (string) - Shelf UUID
+- `bookId` (string) - Book UUID
+
+**Example:**
+```typescript
+await window.api.removeBookFromShelf(shelfId, bookId)
+```
+
+**IPC Channel:** `SHELVES_REMOVE_BOOK`
+
+---
+
+### `getBookShelves(bookId: string): Promise<Shelf[]>`
+
+Retrieves all shelves containing a book.
+
+**Parameters:**
+- `bookId` (string) - Book UUID
+
+**Returns:**
+- `Promise<Shelf[]>` - Array of shelves
+
+**Example:**
+```typescript
+const shelves = await window.api.getBookShelves(bookId)
+console.log(`Book is in ${shelves.length} shelves`)
+```
+
+**IPC Channel:** `SHELVES_GET_FOR_BOOK`
+
+---
+
+### `getSmartShelves(): Promise<ShelfWithBookCount[]>`
+
+Retrieves auto-generated smart shelves with book counts.
+
+**Returns:**
+- `Promise<ShelfWithBookCount[]>` - Array of smart shelves
+
+**Example:**
+```typescript
+const smartShelves = await window.api.getSmartShelves()
+// Returns: Recently Added, In Progress, Unread, Finished, Large Files
+```
+
+**IPC Channel:** `SHELVES_GET_SMART`
+
+**Smart Shelf Types:**
+- `smart-recent`: Recently Added (latest 20 books)
+- `smart-progress`: In Progress (0% < progress < 100%)
+- `smart-unread`: Unread (progress === 0%)
+- `smart-finished`: Finished (progress >= 100%)
+- `smart-large`: Large Files (pages > 300)
+
+---
+
+### `getSmartShelfBooks(smartShelfId: string): Promise<Book[]>`
+
+Retrieves books from a smart shelf.
+
+**Parameters:**
+- `smartShelfId` (string) - Smart shelf ID (e.g., 'smart-recent')
+
+**Returns:**
+- `Promise<Book[]>` - Array of books matching smart shelf criteria
+
+**Example:**
+```typescript
+const inProgressBooks = await window.api.getSmartShelfBooks('smart-progress')
+```
+
+**IPC Channel:** `SHELVES_GET_SMART_BOOKS`
+
+---
+
 ## Files API
 
 ### `getBookFile(bookId: string): Promise<string>`

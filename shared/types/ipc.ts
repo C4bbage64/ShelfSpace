@@ -4,6 +4,7 @@ import type { ReadingProgress } from './progress';
 import type { Note, Highlight } from './notes';
 import type { Settings } from './settings';
 import type { ReadingStats, BookReadingStats, ReadingSession } from './stats';
+import type { Shelf, ShelfWithBookCount } from './shelf';
 
 // IPC channel names
 export const IPC_CHANNELS = {
@@ -34,6 +35,19 @@ export const IPC_CHANNELS = {
   STATS_GET_BOOK: 'stats:getBook',
   STATS_GET_OVERALL: 'stats:getOverall',
   
+  // Shelves
+  SHELVES_GET_ALL: 'shelves:getAll',
+  SHELVES_CREATE: 'shelves:create',
+  SHELVES_RENAME: 'shelves:rename',
+  SHELVES_UPDATE: 'shelves:update',
+  SHELVES_DELETE: 'shelves:delete',
+  SHELVES_GET_BOOKS: 'shelves:getBooks',
+  SHELVES_ADD_BOOK: 'shelves:addBook',
+  SHELVES_REMOVE_BOOK: 'shelves:removeBook',
+  SHELVES_GET_FOR_BOOK: 'shelves:getForBook',
+  SHELVES_GET_SMART: 'shelves:getSmart',
+  SHELVES_GET_SMART_BOOKS: 'shelves:getSmartBooks',
+  
   // Files
   FILE_GET_PATH: 'file:getPath',
   FILE_READ: 'file:read',
@@ -43,6 +57,12 @@ export const IPC_CHANNELS = {
   SETTINGS_GET: 'settings:get',
   SETTINGS_SAVE: 'settings:save',
 } as const;
+
+// Export type for IPC channels
+export type IpcChannel = typeof IPC_CHANNELS[keyof typeof IPC_CHANNELS];
+
+// Re-export for convenience
+export const IpcChannel = IPC_CHANNELS;
 
 // IPC API interface exposed to renderer
 export interface ElectronAPI {
@@ -81,6 +101,19 @@ export interface ElectronAPI {
   endReadingSession: (sessionId: string) => Promise<ReadingSession | null>;
   getBookStats: (bookId: string) => Promise<BookReadingStats>;
   getOverallStats: () => Promise<ReadingStats>;
+  
+  // Shelves
+  getAllShelves: () => Promise<ShelfWithBookCount[]>;
+  createShelf: (name: string, color?: string, icon?: string) => Promise<Shelf>;
+  renameShelf: (shelfId: string, newName: string) => Promise<void>;
+  updateShelf: (shelfId: string, updates: Partial<Shelf>) => Promise<void>;
+  deleteShelf: (shelfId: string) => Promise<void>;
+  getShelfBooks: (shelfId: string) => Promise<Book[]>;
+  addBookToShelf: (shelfId: string, bookId: string) => Promise<void>;
+  removeBookFromShelf: (shelfId: string, bookId: string) => Promise<void>;
+  getBookShelves: (bookId: string) => Promise<Shelf[]>;
+  getSmartShelves: () => Promise<ShelfWithBookCount[]>;
+  getSmartShelfBooks: (smartShelfId: string) => Promise<Book[]>;
 }
 
 // Augment window object

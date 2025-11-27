@@ -43,6 +43,46 @@ const migrations: Migration[] = [
       db.exec('CREATE INDEX IF NOT EXISTS idx_reading_sessions_startTime ON reading_sessions(startTime)');
     },
   },
+  {
+    id: 3,
+    name: 'add_shelves_system',
+    up: (db: Database.Database) => {
+      // Add progress column to books table
+      db.exec(`
+        ALTER TABLE books ADD COLUMN progress REAL DEFAULT 0
+      `);
+      
+      // Create shelves table
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS shelves (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          color TEXT DEFAULT '#3b82f6',
+          icon TEXT DEFAULT '📚',
+          createdAt TEXT NOT NULL
+        )
+      `);
+      
+      // Create book_shelf junction table (many-to-many)
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS book_shelf (
+          id TEXT PRIMARY KEY,
+          bookId TEXT NOT NULL,
+          shelfId TEXT NOT NULL,
+          addedAt TEXT NOT NULL,
+          FOREIGN KEY (bookId) REFERENCES books(id) ON DELETE CASCADE,
+          FOREIGN KEY (shelfId) REFERENCES shelves(id) ON DELETE CASCADE,
+          UNIQUE(bookId, shelfId)
+        )
+      `);
+      
+      // Create indexes for better query performance
+      db.exec('CREATE INDEX IF NOT EXISTS idx_shelves_name ON shelves(name)');
+      db.exec('CREATE INDEX IF NOT EXISTS idx_book_shelf_bookId ON book_shelf(bookId)');
+      db.exec('CREATE INDEX IF NOT EXISTS idx_book_shelf_shelfId ON book_shelf(shelfId)');
+      db.exec('CREATE INDEX IF NOT EXISTS idx_books_progress ON books(progress)');
+    },
+  },
 ];
 
 export function runMigrations(db: Database.Database): void {

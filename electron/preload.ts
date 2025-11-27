@@ -4,6 +4,7 @@ import type { Book } from '../shared/types/book';
 import type { ReadingProgress } from '../shared/types/progress';
 import type { Note, Highlight } from '../shared/types/notes';
 import type { Settings } from '../shared/types/settings';
+import type { Shelf } from '../shared/types/shelf';
 
 const api: ElectronAPI = {
   // Books
@@ -63,6 +64,30 @@ const api: ElectronAPI = {
     ipcRenderer.invoke(IPC_CHANNELS.STATS_GET_BOOK, bookId),
   getOverallStats: () =>
     ipcRenderer.invoke(IPC_CHANNELS.STATS_GET_OVERALL),
+  
+  // Shelves
+  getAllShelves: () =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_ALL),
+  createShelf: (name: string, color?: string, icon?: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_CREATE, name, color, icon),
+  renameShelf: (shelfId: string, newName: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_RENAME, shelfId, newName),
+  updateShelf: (shelfId: string, updates: Partial<Shelf>) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_UPDATE, shelfId, updates),
+  deleteShelf: (shelfId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_DELETE, shelfId),
+  getShelfBooks: (shelfId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_BOOKS, shelfId),
+  addBookToShelf: (shelfId: string, bookId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_ADD_BOOK, shelfId, bookId),
+  removeBookFromShelf: (shelfId: string, bookId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_REMOVE_BOOK, shelfId, bookId),
+  getBookShelves: (bookId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_FOR_BOOK, bookId),
+  getSmartShelves: () =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_SMART),
+  getSmartShelfBooks: (smartShelfId: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_SMART_BOOKS, smartShelfId),
 };
 
 contextBridge.exposeInMainWorld('api', api);

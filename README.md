@@ -5,6 +5,9 @@ An offline-first desktop reading application built with Electron, React, and Typ
 ## Features
 
 - 📚 **Import and manage** PDF, EPUB, and TXT books
+- 🗂️ **Shelves system** - organize books into custom collections
+- ⚡ **Smart Shelves** - auto-generated shelves (Recently Added, In Progress, Unread, Finished, Large Files)
+- 🎯 **Drag-and-drop organization** - drag books onto shelves
 - 📖 **Built-in readers** with customizable themes
 - 💾 **Automatic progress tracking** - picks up where you left off
 - 📝 **Notes and highlights** with color options
@@ -130,19 +133,23 @@ Where `{userData}` is:
 ### v0.1.0
 
 - ✅ Book import (PDF, EPUB, TXT)
-- ✅ PDF reader with page navigation and zoom
+- ✅ Shelves system with drag-and-drop organization
+- ✅ Smart Shelves (Recently Added, In Progress, Unread, Finished, Large Files)
+- ✅ Custom shelves with colors and icons
+- ✅ Many-to-many book-shelf relationships
+- ✅ PDF reader with page navigation, zoom, and text selection
 - ✅ EPUB reader with chapter navigation
 - ✅ TXT reader with scroll progress
 - ✅ SQLite database for library management
-- ✅ Reading progress persistence
-- ✅ Highlights with color picker
+- ✅ Reading progress persistence with progress column
+- ✅ Highlights with color picker (5 colors)
 - ✅ Edit book metadata (title, author)
-- ✅ EPUB cover extraction
-- ✅ Reading session tracking
+- ✅ EPUB cover extraction using OPF parser
+- ✅ Reading session tracking with statistics
 - ✅ Search and filter library
 - ✅ Grid and list view modes
 - ✅ Drag and drop import
-- ✅ Delete books
+- ✅ Delete books and shelves
 
 ## License
 

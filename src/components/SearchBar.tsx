@@ -42,4 +42,5 @@ function SearchBar({ value, onChange, placeholder = 'Search...' }: SearchBarProp
   );
 }
 
+export { SearchBar };
 export default SearchBar;

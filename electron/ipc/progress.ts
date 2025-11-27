@@ -21,11 +21,11 @@ export function registerProgressHandlers(ipcMain: IpcMain): void {
         new Date().toISOString()
       );
 
-      // Update book's lastOpenedAt
+      // Update book's lastOpenedAt and progress column
       const updateBook = db.prepare(
-        'UPDATE books SET lastOpenedAt = ? WHERE id = ?'
+        'UPDATE books SET lastOpenedAt = ?, progress = ? WHERE id = ?'
       );
-      updateBook.run(new Date().toISOString(), progress.bookId);
+      updateBook.run(new Date().toISOString(), progress.percentage / 100, progress.bookId);
     }
   );
 

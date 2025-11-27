@@ -12,10 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Library management**: Import books via drag-and-drop or file picker
 - **Automatic metadata extraction**: Title, author, page count from PDF/EPUB
 - **Cover image extraction**: Automatic cover extraction from EPUB files using OPF parser
+- **Shelves system**: Organize books into custom shelves (like playlists)
+- **Smart Shelves**: Auto-generated shelves (Recently Added, In Progress, Unread, Finished, Large Files)
+- **Drag-and-drop organization**: Drag books onto shelves to add them
+- **Many-to-many relationships**: Books can belong to multiple shelves
 - **Search and filter**: Real-time search by title/author, filter by file type
 - **Sort options**: Sort by title, author, import date, or last opened
 - **Grid and list views**: Toggle between card-based grid and compact list
-- **Reading progress tracking**: Auto-save and restore reading position
+- **Reading progress tracking**: Auto-save and restore reading position with progress column
 - **Highlights system**: Create colored highlights with 5 color options (Yellow, Green, Blue, Pink, Orange)
 - **Highlights panel**: Side panel to view, navigate, and delete highlights
 - **Text selection in PDF**: PDF.js TextLayer integration for accurate text selection
@@ -46,7 +50,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Book vault**: Sandboxed file storage in app data directory
 
 ### Database Schema
-- `books` table: Book metadata with foreign key constraints
+- `books` table: Book metadata with foreign key constraints and progress column
+- `shelves` table: User-created shelves with customizable name, color, and icon
+- `book_shelf` table: Many-to-many junction table for shelf membership
 - `progress` table: Reading position tracking
 - `notes` table: User notes with location references
 - `highlights` table: Text highlights with color and location

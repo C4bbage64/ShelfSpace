@@ -1,0 +1,145 @@
+.shelf-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.shelf-header {
+  margin-bottom: 2rem;
+}
+
+.shelf-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.shelf-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.shelf-title-section h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.shelf-count {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a0a0b0);
+}
+
+.shelf-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.shelf-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-controls label {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a0a0b0);
+}
+
+.sort-controls select {
+  padding: 0.5rem 0.75rem;
+  background: var(--input-bg, #2a2a3a);
+  color: var(--text-primary, #e0e0e8);
+  border: 1px solid var(--border-color, #3a3a4a);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--input-bg, #2a2a3a);
+  border-radius: 6px;
+  padding: 0.25rem;
+}
+
+.view-toggle button {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #a0a0b0);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.view-toggle button.active {
+  background: var(--button-bg, #3b82f6);
+  color: white;
+}
+
+.view-toggle button:hover:not(.active) {
+  background: var(--hover-bg, #3a3a4a);
+  color: var(--text-primary, #e0e0e8);
+}
+
+.shelf-content {
+  flex: 1;
+}
+
+.empty-shelf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.empty-shelf p {
+  color: var(--text-secondary, #a0a0b0);
+  font-size: 1rem;
+}
+
+.shelf-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.shelf-not-found h2 {
+  color: var(--text-primary, #e0e0e8);
+  margin: 0;
+}
+
+.shelf-not-found button {
+  padding: 0.75rem 1.5rem;
+  background: var(--button-bg, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+
+.shelf-not-found button:hover {
+  background: var(--button-hover, #2563eb);
+}

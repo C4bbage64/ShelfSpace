@@ -7,9 +7,10 @@ interface BookCardProps {
   onClick: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onDragStart?: (bookId: string) => void;
 }
 
-function BookCard({ book, viewMode, onClick, onEdit, onDelete }: BookCardProps) {
+function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: BookCardProps) {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Never';
     const date = new Date(dateString);
@@ -43,9 +44,23 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete }: BookCardProps) 
     onEdit();
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    e.stopPropagation();
+    if (onDragStart) {
+      onDragStart(book.id);
+    }
+    e.dataTransfer.setData('bookId', book.id);
+    e.dataTransfer.effectAllowed = 'copy';
+  };
+
   if (viewMode === 'list') {
     return (
-      <div className="book-card list" onClick={onClick}>
+      <div 
+        className="book-card list" 
+        onClick={onClick}
+        draggable={!!onDragStart}
+        onDragStart={handleDragStart}
+      >
         <div className="book-cover-list">
           {book.coverPath ? (
             <img src={`file://${book.coverPath}`} alt={book.title} />
@@ -82,7 +97,12 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete }: BookCardProps) 
   }
 
   return (
-    <div className="book-card grid" onClick={onClick}>
+    <div 
+      className="book-card grid" 
+      onClick={onClick}
+      draggable={!!onDragStart}
+      onDragStart={handleDragStart}
+    >
       <div className="book-cover">
         {book.coverPath ? (
           <img src={`file://${book.coverPath}`} alt={book.title} />

@@ -30,6 +30,19 @@ ShelfSpace is an offline-first desktop reading application that supports PDF, EP
 
 ### 📖 Library Management
 
+#### Shelves System
+- **Custom Shelves**: Create unlimited custom shelves to organize books
+- **Smart Shelves**: Auto-generated shelves based on reading status:
+  - **Recently Added** 🕐: Latest 20 imported books
+  - **In Progress** 📖: Books with partial progress
+  - **Unread** 📚: Books with 0% progress
+  - **Finished** ✅: Books at 100% completion
+  - **Large Files** 📦: Books with 300+ pages
+- **Drag-and-Drop**: Drag books onto shelves to organize
+- **Many-to-Many**: Books can belong to multiple shelves
+- **Customization**: Choose color and icon for each shelf
+- **Context Menu**: Right-click shelves to delete
+
 #### Import Books
 - Drag-and-drop file import
 - File picker dialog

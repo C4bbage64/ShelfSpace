@@ -61,6 +61,7 @@ ShelfSpace is an offline-first desktop reading application built with Electron, 
 - `books.ts` - Book import, list, update, delete
 - `progress.ts` - Reading progress tracking
 - `notes.ts` - Notes and highlights CRUD
+- `shelves.ts` - Shelf management and smart shelves
 - `stats.ts` - Reading session statistics
 - `files.ts` - File system operations
 - `settings.ts` - App settings management
@@ -90,6 +91,7 @@ window.api.saveProgress()
 
 #### Pages
 - `Library.tsx` - Main library view with search/filter/sort
+- `ShelfView.tsx` - Individual shelf view with book organization
 - `Reader.tsx` - Book reader container
 - `Settings.tsx` - App settings UI
 
@@ -99,8 +101,10 @@ window.api.saveProgress()
 - `TXTReader.tsx` - Plain text reader
 
 #### Components
-- `BookCard.tsx` - Book display card
+- `BookCard.tsx` - Book display card with drag-and-drop
 - `BookGrid.tsx` - Grid/list layout
+- `ShelfSidebar.tsx` - Shelves navigation sidebar
+- `AddShelfModal.tsx` - Shelf creation modal
 - `EditBookModal.tsx` - Book metadata editor
 - `HighlightPanel.tsx` - Highlights sidebar
 - `SearchBar.tsx` - Search input
@@ -108,6 +112,7 @@ window.api.saveProgress()
 
 #### State Management (`/src/stores`)
 - `booksStore.ts` - Book library state (Zustand)
+- `shelvesStore.ts` - Shelves and organization state
 - `settingsStore.ts` - App settings state
 
 ## Data Flow
@@ -181,6 +186,27 @@ coverPath TEXT
 filePath TEXT NOT NULL
 importedAt TEXT NOT NULL
 lastOpenedAt TEXT
+progress REAL DEFAULT 0  -- 0.0 to 1.0 for smart shelves
+```
+
+#### `shelves`
+```sql
+id TEXT PRIMARY KEY
+name TEXT NOT NULL
+color TEXT DEFAULT '#3b82f6'
+icon TEXT DEFAULT '📚'
+createdAt TEXT NOT NULL
+```
+
+#### `book_shelf` (Many-to-Many Junction)
+```sql
+id TEXT PRIMARY KEY
+bookId TEXT NOT NULL
+shelfId TEXT NOT NULL
+addedAt TEXT NOT NULL
+FOREIGN KEY (bookId) REFERENCES books(id) ON DELETE CASCADE
+FOREIGN KEY (shelfId) REFERENCES shelves(id) ON DELETE CASCADE
+UNIQUE(bookId, shelfId)  -- Prevent duplicates
 ```
 
 #### `progress`
