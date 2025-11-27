@@ -13,6 +13,7 @@ export function ShelfSidebar({ onCreateShelf }: ShelfSidebarProps) {
   const { shelves, smartShelves, loadShelves, loadSmartShelves, deleteShelf, addBookToShelf } = useShelvesStore();
   const [contextMenu, setContextMenu] = useState<{ shelfId: string; x: number; y: number } | null>(null);
   const [dragOver, setDragOver] = useState<string | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     loadShelves();
@@ -64,45 +65,66 @@ export function ShelfSidebar({ onCreateShelf }: ShelfSidebarProps) {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="shelf-sidebar">
+    <div className={`shelf-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      <button 
+        className="shelf-sidebar-collapse-btn" 
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        title={isCollapsed ? 'Expand shelves' : 'Collapse shelves'}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          {isCollapsed ? (
+            <path d="M9 18l6-6-6-6" />
+          ) : (
+            <path d="M15 18l-6-6 6-6" />
+          )}
+        </svg>
+      </button>
+      
       <div className="sidebar-section">
-        <Link to="/library" className={`sidebar-item ${isActive('/library') ? 'active' : ''}`}>
+        <Link to="/library" className={`sidebar-item ${isActive('/library') ? 'active' : ''}`} title="All Books">
           <span className="sidebar-icon">📚</span>
-          <span className="sidebar-label">All Books</span>
+          {!isCollapsed && <span className="sidebar-label">All Books</span>}
         </Link>
       </div>
 
       <div className="sidebar-section">
-        <div className="sidebar-section-header">
-          <h3>Smart Shelves</h3>
-        </div>
+        {!isCollapsed && (
+          <div className="sidebar-section-header">
+            <h3>Smart Shelves</h3>
+          </div>
+        )}
         {smartShelves.map((shelf) => (
           <Link
             key={shelf.id}
             to={`/shelf/${shelf.id}`}
             className={`sidebar-item ${isActive(`/shelf/${shelf.id}`) ? 'active' : ''}`}
+            title={shelf.name}
           >
             <span className="sidebar-icon">{shelf.icon}</span>
-            <span className="sidebar-label">{shelf.name}</span>
-            <span className="sidebar-count">{shelf.bookCount}</span>
+            {!isCollapsed && <span className="sidebar-label">{shelf.name}</span>}
+            {!isCollapsed && <span className="sidebar-count">{shelf.bookCount}</span>}
           </Link>
         ))}
       </div>
 
       <div className="sidebar-section">
-        <div className="sidebar-section-header">
-          <h3>My Shelves</h3>
-          <button className="add-shelf-btn" onClick={onCreateShelf} title="Create shelf">
-            +
-          </button>
-        </div>
-        {shelves.length === 0 ? (
-          <div className="empty-shelves">
-            <p>No shelves yet</p>
-            <button onClick={onCreateShelf} className="create-first-shelf">
-              Create your first shelf
+        {!isCollapsed && (
+          <div className="sidebar-section-header">
+            <h3>My Shelves</h3>
+            <button className="add-shelf-btn" onClick={onCreateShelf} title="Create shelf">
+              +
             </button>
           </div>
+        )}
+        {shelves.length === 0 ? (
+          !isCollapsed && (
+            <div className="empty-shelves">
+              <p>No shelves yet</p>
+              <button onClick={onCreateShelf} className="create-first-shelf">
+                Create your first shelf
+              </button>
+            </div>
+          )
         ) : (
           shelves.map((shelf) => (
             <Link
@@ -114,10 +136,11 @@ export function ShelfSidebar({ onCreateShelf }: ShelfSidebarProps) {
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, shelf.id)}
               data-color={shelf.color}
+              title={shelf.name}
             >
               <span className="sidebar-icon">{shelf.icon}</span>
-              <span className="sidebar-label">{shelf.name}</span>
-              <span className="sidebar-count">{shelf.bookCount}</span>
+              {!isCollapsed && <span className="sidebar-label">{shelf.name}</span>}
+              {!isCollapsed && <span className="sidebar-count">{shelf.bookCount}</span>}
             </Link>
           ))
         )}
