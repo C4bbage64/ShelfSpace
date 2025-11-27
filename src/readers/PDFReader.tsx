@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import { TextLayer } from 'pdfjs-dist';
 import 'pdfjs-dist/build/pdf.worker.min.mjs';
+import 'pdfjs-dist/web/pdf_viewer.css';
 import './PDFReader.css';
 
 // Set up PDF.js worker using the bundled worker
@@ -262,7 +263,7 @@ function PDFReader({ fileData, initialPage = 1, onProgressUpdate }: PDFReaderPro
       <div className="pdf-container" ref={containerRef}>
         <div className="pdf-page-wrapper">
           <canvas ref={canvasRef} className="pdf-canvas" />
-          <div ref={textLayerRef} className="pdf-text-layer" />
+          <div ref={textLayerRef} className="textLayer" />
         </div>
       </div>
     </div>

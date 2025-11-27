@@ -77,32 +77,19 @@
   background-color: white;
 }
 
-.pdf-text-layer {
+.pdf-page-wrapper .textLayer {
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
-  opacity: 0.2;
   line-height: 1;
+  z-index: 2;
 }
 
-.pdf-text-layer span {
-  position: absolute;
-  white-space: pre;
-  transform-origin: 0% 0%;
-  color: transparent;
-  cursor: text;
-}
-
-.pdf-text-layer span::selection {
-  background: rgba(0, 0, 255, 0.3);
-}
-
-.pdf-text-layer .highlight {
-  margin: -1px;
-  padding: 1px;
-  background-color: rgba(255, 255, 0, 0.4);
-  border-radius: 4px;
+.pdf-page-wrapper .textLayer span::selection {
+  background: rgba(0, 100, 255, 0.4);
 }
 
 .pdf-loading,
