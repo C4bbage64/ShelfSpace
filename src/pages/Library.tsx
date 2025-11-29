@@ -203,7 +203,8 @@ function Library() {
             <polyline points="17,8 12,3 7,8" />
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
-          <p>Drop files to import</p>
+          <p>Drop your books here</p>
+          <small>Supports PDF, EPUB, and TXT files</small>
         </div>
       </div>
 

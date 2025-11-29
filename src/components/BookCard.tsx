@@ -21,6 +21,18 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: Bo
     });
   };
 
+  const getProgressPercentage = () => {
+    const progress = (book as any).progress || 0;
+    return Math.round(progress * 100);
+  };
+
+  const getProgressColor = () => {
+    const progress = getProgressPercentage();
+    if (progress === 0) return 'var(--text-secondary)';
+    if (progress === 100) return 'var(--accent)';
+    return 'var(--accent)';
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'pdf':
@@ -130,6 +142,20 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: Bo
       <div className="book-info">
         <h3 className="book-title" title={book.title}>{book.title}</h3>
         <p className="book-author" title={book.author}>{book.author}</p>
+        {getProgressPercentage() > 0 && (
+          <div className="book-progress">
+            <div className="progress-bar-mini">
+              <div 
+                className="progress-bar-fill" 
+                style={{ 
+                  width: `${getProgressPercentage()}%`,
+                  backgroundColor: getProgressColor()
+                }}
+              />
+            </div>
+            <span className="progress-text">{getProgressPercentage()}%</span>
+          </div>
+        )}
       </div>
     </div>
   );
