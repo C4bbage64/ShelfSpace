@@ -1,5 +1,6 @@
 .settings-page {
-  max-width: 800px;
+  max-width: 900px;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .settings-sections {
@@ -11,16 +12,27 @@
 .settings-section {
   background-color: var(--bg-secondary);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all var(--transition-normal);
+}
+
+.settings-section:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .section-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }
 
 .setting-item {
@@ -62,33 +74,46 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
-  padding: var(--space-sm);
-  background: none;
+  padding: var(--space-md);
+  background: var(--bg-primary);
   border: 2px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all var(--transition-fast);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
+  font-weight: 500;
+  min-width: 80px;
 }
 
 .theme-option:hover {
-  border-color: var(--text-secondary);
+  border-color: var(--accent);
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .theme-option.active {
   border-color: var(--accent);
+  background: var(--bg-tertiary);
   color: var(--accent);
+  box-shadow: var(--shadow-md), inset 0 0 0 1px var(--accent);
 }
 
 .theme-preview {
-  width: 48px;
-  height: 32px;
-  border-radius: var(--radius-sm);
+  width: 56px;
+  height: 36px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast);
+}
+
+.theme-option:hover .theme-preview {
+  transform: scale(1.1);
 }
 
 .theme-preview.dark {
