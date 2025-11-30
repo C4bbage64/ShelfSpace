@@ -7,10 +7,11 @@ interface BookCardProps {
   onClick: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onAddToShelf?: () => void;
   onDragStart?: (bookId: string) => void;
 }
 
-function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: BookCardProps) {
+function BookCard({ book, viewMode, onClick, onEdit, onDelete, onAddToShelf, onDragStart }: BookCardProps) {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Never';
     const date = new Date(dateString);
@@ -56,6 +57,13 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: Bo
     onEdit();
   };
 
+  const handleAddToShelfClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onAddToShelf) {
+      onAddToShelf();
+    }
+  };
+
   const handleDragStart = (e: React.DragEvent) => {
     e.stopPropagation();
     if (onDragStart) {
@@ -91,10 +99,17 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: Bo
           <span className="book-date">Last opened: {formatDate(book.lastOpenedAt)}</span>
         </div>
         <div className="book-actions-list">
+          <button className="book-add-shelf" onClick={handleAddToShelfClick} title="Add to shelf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              <line x1="12" y1="11" x2="12" y2="17" />
+              <line x1="9" y1="14" x2="15" y2="14" />
+            </svg>
+          </button>
           <button className="book-edit" onClick={handleEditClick} title="Edit book">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              <path d="M18.5 2.5a2.121 2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
           </button>
           <button className="book-delete" onClick={handleDeleteClick} title="Delete book">
@@ -125,6 +140,13 @@ function BookCard({ book, viewMode, onClick, onEdit, onDelete, onDragStart }: Bo
           </div>
         )}
         <div className="book-overlay">
+          <button className="book-add-shelf" onClick={handleAddToShelfClick} title="Add to shelf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              <line x1="12" y1="11" x2="12" y2="17" />
+              <line x1="9" y1="14" x2="15" y2="14" />
+            </svg>
+          </button>
           <button className="book-edit" onClick={handleEditClick} title="Edit book">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />

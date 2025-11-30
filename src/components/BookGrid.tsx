@@ -8,11 +8,12 @@ export interface BookGridProps {
   onBookClick: (bookId: string) => void;
   onEditBook: (book: Book) => void;
   onDeleteBook: (bookId: string) => void;
+  onAddToShelf?: (book: Book) => void;
   deleteLabel?: string;
   enableDragDrop?: boolean;
 }
 
-function BookGrid({ books, viewMode, onBookClick, onEditBook, onDeleteBook, enableDragDrop = true }: BookGridProps) {
+function BookGrid({ books, viewMode, onBookClick, onEditBook, onDeleteBook, onAddToShelf, enableDragDrop = true }: BookGridProps) {
   const handleDragStart = (bookId: string) => {
     // Drag data is set in BookCard component
     console.log('Dragging book:', bookId);
@@ -28,6 +29,7 @@ function BookGrid({ books, viewMode, onBookClick, onEditBook, onDeleteBook, enab
           onClick={() => onBookClick(book.id)}
           onEdit={() => onEditBook(book)}
           onDelete={() => onDeleteBook(book.id)}
+          onAddToShelf={onAddToShelf ? () => onAddToShelf(book) : undefined}
           onDragStart={enableDragDrop ? handleDragStart : undefined}
         />
       ))}

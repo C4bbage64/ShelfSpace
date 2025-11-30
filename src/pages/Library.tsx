@@ -5,6 +5,7 @@ import BookGrid from '../components/BookGrid';
 import BookGridSkeleton from '../components/BookGridSkeleton';
 import SearchBar from '../components/SearchBar';
 import { EditBookModal } from '../components/EditBookModal';
+import { AddToShelfModal } from '../components/AddToShelfModal';
 import type { Book } from '../../shared/types/book';
 import './Library.css';
 
@@ -28,6 +29,7 @@ function Library() {
   
   const [isDragging, setIsDragging] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
+  const [addingToShelfBook, setAddingToShelfBook] = useState<Book | null>(null);
 
   useEffect(() => {
     loadBooks();
@@ -46,6 +48,10 @@ function Library() {
 
   const handleEditBook = (book: Book) => {
     setEditingBook(book);
+  };
+
+  const handleAddToShelf = (book: Book) => {
+    setAddingToShelfBook(book);
   };
 
   const handleSaveBook = async (id: string, updates: { title?: string; author?: string }) => {
@@ -197,6 +203,7 @@ function Library() {
           viewMode={viewMode}
           onBookClick={handleBookClick}
           onEditBook={handleEditBook}
+          onAddToShelf={handleAddToShelf}
           onDeleteBook={handleDeleteBook}
         />
       )}
@@ -219,6 +226,15 @@ function Library() {
           isOpen={true}
           onClose={() => setEditingBook(null)}
           onSave={handleSaveBook}
+        />
+      )}
+
+      {addingToShelfBook && (
+        <AddToShelfModal
+          isOpen={true}
+          bookId={addingToShelfBook.id}
+          bookTitle={addingToShelfBook.title}
+          onClose={() => setAddingToShelfBook(null)}
         />
       )}
     </div>

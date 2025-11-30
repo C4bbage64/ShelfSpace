@@ -144,16 +144,39 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 255, 255, 0.5);
 }
+
+.book-add-shelf {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.25);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+  color: white;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-normal);
+  transform: translateY(10px);
 }
 
-.book-edit:hover {
-  background-color: var(--accent-secondary, #4f46e5);
+.book-card.grid:hover .book-add-shelf {
+  transform: translateY(0);
 }
 
-.book-delete:hover {
-  background-color: var(--accent);
+.book-add-shelf:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.book-add-shelf svg {
+  width: 16px;
+  height: 16px;
 }
 
 .book-edit svg,
@@ -333,18 +356,28 @@
   flex-shrink: 0;
 }
 
+.book-card.list .book-add-shelf,
 .book-card.list .book-edit,
 .book-card.list .book-delete {
   background-color: transparent;
   color: var(--text-secondary);
+  transform: none;
+}
+
+.book-card.list .book-add-shelf:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  transform: scale(1.1);
 }
 
 .book-card.list .book-edit:hover {
   background-color: rgba(79, 70, 229, 0.1);
   color: var(--accent-secondary, #4f46e5);
+  transform: scale(1.1);
 }
 
 .book-card.list .book-delete:hover {
   background-color: rgba(233, 69, 96, 0.1);
   color: var(--accent);
+  transform: scale(1.1);
 }
