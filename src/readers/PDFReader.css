@@ -14,12 +14,26 @@
   padding: var(--space-sm) var(--space-md);
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .pdf-navigation {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  background: var(--bg-tertiary);
+  padding: 4px;
+  border-radius: var(--radius-md);
+}
+
+.pdf-navigation .btn {
+  transition: all var(--transition-fast);
+}
+
+.pdf-navigation .btn:hover {
+  transform: translateY(-1px);
+  background: var(--accent);
+  color: white;
 }
 
 .page-info {
@@ -39,24 +53,46 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
+  transition: all var(--transition-fast);
+  font-weight: 600;
+}
+
+.page-input:hover {
+  border-color: var(--accent);
 }
 
 .page-input:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
 }
 
 .pdf-zoom {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  background: var(--bg-tertiary);
+  padding: 4px;
+  border-radius: var(--radius-md);
+}
+
+.pdf-zoom .btn {
+  transition: all var(--transition-fast);
+}
+
+.pdf-zoom .btn:hover {
+  transform: scale(1.05);
+  background: var(--accent);
+  color: white;
 }
 
 .zoom-level {
   font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   min-width: 50px;
   text-align: center;
+  font-weight: 600;
+  padding: 0 var(--space-xs);
 }
 
 .pdf-container {

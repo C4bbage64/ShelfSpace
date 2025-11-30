@@ -79,6 +79,75 @@
   opacity: 0.5;
 }
 
+/* Highlight Card */
+.highlight-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  transition: all var(--transition-normal);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.highlight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+}
+
+.highlight-color-indicator {
+  width: 4px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  transition: width var(--transition-fast);
+}
+
+.highlight-card:hover .highlight-color-indicator {
+  width: 6px;
+}
+
+.highlight-actions {
+  display: flex;
+  gap: var(--space-xs);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.highlight-card:hover .highlight-actions {
+  opacity: 1;
+}
+
+.highlight-action-btn {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.highlight-action-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
 .highlight-empty p {
   font-weight: 500;
   color: var(--text-primary);

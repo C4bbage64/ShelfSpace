@@ -1,12 +1,28 @@
 /* Grid view card */
 .book-card.grid {
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-normal);
   border-radius: var(--radius-md);
+  position: relative;
+}
+
+.book-card.grid::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: -1;
+}
+
+.book-card.grid:hover::before {
+  opacity: 0.15;
 }
 
 .book-card.grid:hover {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-6px) scale(1.03);
   filter: brightness(1.05);
 }
 
@@ -18,11 +34,34 @@
   background-color: var(--bg-secondary);
   margin-bottom: var(--space-sm);
   box-shadow: var(--shadow-md);
-  transition: box-shadow var(--transition-fast);
+  transition: box-shadow var(--transition-normal);
 }
 
 .book-card.grid:hover .book-cover {
   box-shadow: var(--shadow-xl);
+}
+
+.book-cover::after {
+  content: attr(data-status);
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all var(--transition-normal);
+}
+
+.book-card.grid:hover .book-cover::after {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .book-cover img {
@@ -60,14 +99,14 @@
 .book-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   padding: var(--space-sm);
   gap: var(--space-xs);
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-normal);
 }
 
 .book-card.grid:hover .book-overlay {
@@ -89,14 +128,21 @@
   border-radius: var(--radius-sm);
   color: white;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-normal);
+  transform: translateY(10px);
+}
+
+.book-card.grid:hover .book-edit,
+.book-card.grid:hover .book-delete {
+  transform: translateY(0);
 }
 
 .book-edit:hover,
 .book-delete:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
 }
   cursor: pointer;
   transition: background-color var(--transition-fast);
@@ -149,7 +195,38 @@
   flex: 1;
   height: 3px;
   background-color: var(--bg-tertiary);
-  border-radius: var(--radius-sm);\n  overflow: hidden;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width var(--transition-slow);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmerProgress 2s infinite;
+}
+
+@keyframes shimmerProgress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .progress-text {
@@ -169,11 +246,31 @@
   background-color: var(--bg-secondary);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.book-card.list::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transition: transform var(--transition-normal);
+}
+
+.book-card.list:hover::before {
+  transform: scaleY(1);
 }
 
 .book-card.list:hover {
   background-color: var(--bg-tertiary);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
 }
 
 .book-cover-list {
