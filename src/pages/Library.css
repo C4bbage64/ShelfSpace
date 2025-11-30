@@ -68,7 +68,7 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  padding: var(--space-xl);
+  padding: var(--space-2xl);
   text-align: center;
   color: var(--text-secondary);
   animation: fadeIn 0.5s ease;
@@ -97,9 +97,27 @@
 
 .empty-state p {
   font-size: var(--font-size-md);
-  margin: 0;
+  margin: 0 0 var(--space-lg) 0;
   max-width: 400px;
   line-height: 1.6;
+}
+
+.empty-state-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.empty-state-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
 }
 
 /* Drop Zone */

@@ -117,13 +117,35 @@ export function ShelfView() {
       <div className="shelf-content">
         {sortedBooks.length === 0 ? (
           <div className="empty-shelf">
-            <p>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="80" height="80">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+            </svg>
+            <h3>
               {searchQuery
                 ? 'No books match your search'
                 : isSmart
                 ? 'No books in this smart shelf yet'
-                : 'This shelf is empty. Drag books here to add them.'}
+                : 'This shelf is empty'}
+            </h3>
+            <p>
+              {searchQuery
+                ? 'Try adjusting your search query'
+                : isSmart
+                ? 'Books matching this shelf\'s criteria will appear here automatically'
+                : 'Drag books here from your library to organize them'}
             </p>
+            {searchQuery && (
+              <button className="btn btn-secondary" onClick={() => setSearchQuery('')}>
+                Clear Search
+              </button>
+            )}
+            {!isSmart && !searchQuery && (
+              <button className="btn btn-primary" onClick={() => navigate('/library')}>
+                Go to Library
+              </button>
+            )}
           </div>
         ) : (
           <BookGrid

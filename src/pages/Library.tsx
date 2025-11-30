@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBooksStore } from '../stores/booksStore';
 import BookGrid from '../components/BookGrid';
+import BookGridSkeleton from '../components/BookGridSkeleton';
 import SearchBar from '../components/SearchBar';
 import { EditBookModal } from '../components/EditBookModal';
 import type { Book } from '../../shared/types/book';
@@ -89,17 +90,6 @@ function Library() {
 
   const filteredBooks = getFilteredBooks();
 
-  if (isLoading) {
-    return (
-      <div className="page library-page">
-        <div className="loading-container">
-          <div className="spinner" />
-          <p>Loading library...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div 
       className="page library-page"
@@ -168,14 +158,26 @@ function Library() {
         </div>
       </div>
 
-      {books.length === 0 ? (
+      {isLoading ? (
+        <BookGridSkeleton viewMode={viewMode} count={12} />
+      ) : books.length === 0 ? (
         <div className="empty-state">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <h3>Your library is empty</h3>
-          <p>Import your first book by clicking the button above or drag and drop files here.</p>
+          <p>Start building your digital library by importing your first book.</p>
+          <div className="empty-state-actions">
+            <button className="btn btn-primary" onClick={handleImportClick}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Import Books
+            </button>
+            <p className="empty-state-hint">or drag and drop PDF, EPUB, or TXT files anywhere</p>
+          </div>
         </div>
       ) : filteredBooks.length === 0 ? (
         <div className="empty-state">
@@ -184,7 +186,10 @@ function Library() {
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <h3>No books found</h3>
-          <p>Try adjusting your search query.</p>
+          <p>Try adjusting your search query or filters.</p>
+          <button className="btn btn-secondary" onClick={() => setSearchQuery('')}>
+            Clear Search
+          </button>
         </div>
       ) : (
         <BookGrid 

@@ -126,15 +126,39 @@
 
 .empty-shelf {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 300px;
   text-align: center;
+  padding: var(--space-2xl);
+  animation: fadeIn 0.5s ease;
+}
+
+.empty-shelf svg {
+  margin-bottom: var(--space-lg);
+  opacity: 0.3;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.empty-shelf h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0 0 var(--space-sm) 0;
+  color: var(--text-primary);
 }
 
 .empty-shelf p {
   color: var(--text-secondary, #a0a0b0);
   font-size: 1rem;
+  margin: 0 0 var(--space-lg) 0;
+  max-width: 400px;
+  line-height: 1.6;
 }
 
 .shelf-not-found {
