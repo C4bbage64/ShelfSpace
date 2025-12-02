@@ -6,7 +6,7 @@ import './Sidebar.css';
 function Sidebar() {
   const location = useLocation();
   const { settings, setTheme } = useSettingsStore();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   // Hide sidebar on reader page
   if (location.pathname.startsWith('/reader')) {

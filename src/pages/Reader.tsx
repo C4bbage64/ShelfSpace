@@ -7,6 +7,7 @@ import PDFReader from '../readers/PDFReader';
 import EPUBReader from '../readers/EPUBReader';
 import TXTReader from '../readers/TXTReader';
 import { HighlightPanel } from '../components/HighlightPanel';
+import { SelectionToolbar } from '../components/SelectionToolbar';
 import './Reader.css';
 
 function Reader() {
@@ -19,10 +20,10 @@ function Reader() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showHighlights, setShowHighlights] = useState(false);
-  const [selectedText, setSelectedText] = useState<string>('');
   
   // Reading session tracking
   const sessionRef = useRef<ReadingSession | null>(null);
+  const readerContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadBook() {
@@ -110,36 +111,21 @@ function Reader() {
     }
   };
 
-  // Handle text selection for highlighting
-  const handleTextSelection = useCallback(() => {
-    const selection = window.getSelection();
-    const text = selection?.toString().trim() || '';
-    setSelectedText(text);
-  }, []);
-
-  // Create highlight from selected text
-  const handleCreateHighlight = useCallback(async (color: string) => {
-    if (!bookId || !selectedText) return;
+  // Create highlight from selected text (called from SelectionToolbar)
+  const handleCreateHighlight = useCallback(async (text: string, color: string) => {
+    if (!bookId || !text) return;
     
     try {
       await window.api.saveHighlight({
         bookId,
-        text: selectedText,
+        text,
         location: currentLocation,
         color,
       });
-      setSelectedText('');
-      window.getSelection()?.removeAllRanges();
     } catch (err) {
       console.error('Failed to create highlight:', err);
     }
-  }, [bookId, selectedText, currentLocation]);
-
-  // Listen for text selection
-  useEffect(() => {
-    document.addEventListener('mouseup', handleTextSelection);
-    return () => document.removeEventListener('mouseup', handleTextSelection);
-  }, [handleTextSelection]);
+  }, [bookId, currentLocation]);
 
   const handleBack = () => {
     navigate('/');
@@ -198,7 +184,7 @@ function Reader() {
         </div>
       </header>
 
-      <div className="reader-content">
+      <div className="reader-content" ref={readerContainerRef}>
         <div className="reader-main">
           {book.type === 'pdf' && (
             <PDFReader
@@ -228,11 +214,15 @@ function Reader() {
             bookId={bookId}
             isOpen={showHighlights}
             onClose={() => setShowHighlights(false)}
-            selectedText={selectedText}
-            onCreateHighlight={handleCreateHighlight}
           />
         )}
       </div>
+
+      {/* Floating selection toolbar for quick highlighting */}
+      <SelectionToolbar
+        onHighlight={handleCreateHighlight}
+        containerRef={readerContainerRef}
+      />
     </div>
   );
 }

@@ -4,7 +4,7 @@
   "productName": "ShelfSpace",
   "copyright": "Copyright © 2025 ShelfSpace",
   "directories": {
-    "output": "build-output"
+    "output": "release"
   },
   "files": [
     "dist/**/*",

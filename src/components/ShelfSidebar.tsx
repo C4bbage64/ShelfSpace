@@ -13,7 +13,7 @@ export function ShelfSidebar({ onCreateShelf }: ShelfSidebarProps) {
   const { shelves, smartShelves, loadShelves, loadSmartShelves, deleteShelf, addBookToShelf } = useShelvesStore();
   const [contextMenu, setContextMenu] = useState<{ shelfId: string; x: number; y: number } | null>(null);
   const [dragOver, setDragOver] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   useEffect(() => {
     loadShelves();

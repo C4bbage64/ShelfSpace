@@ -2,22 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Highlight } from '../../shared/types/notes';
 import './HighlightPanel.css';
 
-// Predefined highlight colors
-export const HIGHLIGHT_COLORS = [
-  { name: 'Yellow', value: '#fef08a' },
-  { name: 'Green', value: '#bbf7d0' },
-  { name: 'Blue', value: '#bfdbfe' },
-  { name: 'Pink', value: '#fbcfe8' },
-  { name: 'Orange', value: '#fed7aa' },
-] as const;
-
 interface HighlightPanelProps {
   bookId: string;
   isOpen: boolean;
   onClose: () => void;
   onHighlightClick?: (highlight: Highlight) => void;
-  selectedText?: string;
-  onCreateHighlight?: (color: string) => void;
 }
 
 export function HighlightPanel({
@@ -25,8 +14,6 @@ export function HighlightPanel({
   isOpen,
   onClose,
   onHighlightClick,
-  selectedText,
-  onCreateHighlight,
 }: HighlightPanelProps) {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,12 +45,6 @@ export function HighlightPanel({
     }
   };
 
-  const handleCreateHighlight = (color: string) => {
-    if (onCreateHighlight) {
-      onCreateHighlight(color);
-    }
-  };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -86,24 +67,6 @@ export function HighlightPanel({
           </svg>
         </button>
       </div>
-
-      {/* Quick highlight creator when text is selected */}
-      {selectedText && (
-        <div className="highlight-creator">
-          <p className="selected-text-preview">"{selectedText.slice(0, 100)}{selectedText.length > 100 ? '...' : ''}"</p>
-          <div className="color-picker">
-            {HIGHLIGHT_COLORS.map((color) => (
-              <button
-                key={color.value}
-                className="color-option"
-                style={{ backgroundColor: color.value }}
-                onClick={() => handleCreateHighlight(color.value)}
-                title={color.name}
-              />
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className="highlight-panel-content">
         {isLoading ? (
