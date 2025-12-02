@@ -5,6 +5,7 @@ import { useShelvesStore } from './stores/shelvesStore';
 import Sidebar from './components/Sidebar';
 import { ShelfSidebar } from './components/ShelfSidebar';
 import { AddShelfModal } from './components/AddShelfModal';
+import { UpdateNotification } from './components/UpdateNotification';
 import Library from './pages/Library';
 import Reader from './pages/Reader';
 import Settings from './pages/Settings';
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <div className={`app theme-${settings.theme}`}>
+      <UpdateNotification />
       <Sidebar />
       <ShelfSidebar onCreateShelf={() => setShowAddShelfModal(true)} />
       <main className="main-content">

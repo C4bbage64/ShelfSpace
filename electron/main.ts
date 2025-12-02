@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import path from 'path';
 import { initializeDatabase } from './db';
 import { registerBooksHandlers } from './ipc/books';
@@ -50,6 +51,62 @@ async function createWindow(): Promise<void> {
   });
 }
 
+// Auto-updater configuration and event handlers
+function setupAutoUpdater(): void {
+  if (isDev) {
+    console.log('Auto-updater disabled in development mode');
+    return;
+  }
+
+  // Configure auto-updater
+  autoUpdater.autoDownload = false; // Let user choose when to download
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  // Check for updates on app start
+  autoUpdater.checkForUpdates();
+
+  // Check for updates every 4 hours
+  setInterval(() => {
+    autoUpdater.checkForUpdates();
+  }, 4 * 60 * 60 * 1000);
+
+  // Event: Update available
+  autoUpdater.on('update-available', (info) => {
+    console.log('Update available:', info.version);
+    if (mainWindow) {
+      mainWindow.webContents.send('update-available', info);
+    }
+  });
+
+  // Event: Update not available
+  autoUpdater.on('update-not-available', () => {
+    console.log('App is up to date');
+  });
+
+  // Event: Update downloaded
+  autoUpdater.on('update-downloaded', (info) => {
+    console.log('Update downloaded:', info.version);
+    if (mainWindow) {
+      mainWindow.webContents.send('update-downloaded', info);
+    }
+  });
+
+  // Event: Download progress
+  autoUpdater.on('download-progress', (progress) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('update-progress', progress);
+    }
+  });
+
+  // Event: Error
+  autoUpdater.on('error', (error) => {
+    console.error('Auto-updater error:', error);
+    if (mainWindow) {
+      mainWindow.webContents.send('update-error', error.message);
+    }
+  });
+}
+
 async function initialize(): Promise<void> {
   // Initialize database
   await initializeDatabase();
@@ -65,11 +122,35 @@ async function initialize(): Promise<void> {
   registerSettingsHandlers(ipcMain);
   registerStatsHandlers(ipcMain);
   registerShelfHandlers();
+  
+  // Register update IPC handlers
+  ipcMain.handle('check-for-updates', async () => {
+    if (!isDev) {
+      return await autoUpdater.checkForUpdates();
+    }
+    return null;
+  });
+
+  ipcMain.handle('download-update', async () => {
+    if (!isDev) {
+      return await autoUpdater.downloadUpdate();
+    }
+    return null;
+  });
+
+  ipcMain.handle('install-update', () => {
+    if (!isDev) {
+      autoUpdater.quitAndInstall();
+    }
+  });
 }
 
 app.whenReady().then(async () => {
   await initialize();
   await createWindow();
+  
+  // Setup auto-updater after window is created
+  setupAutoUpdater();
 
   app.on('activate', async () => {
     // macOS: re-create window when dock icon is clicked

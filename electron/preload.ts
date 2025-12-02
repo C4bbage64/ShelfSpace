@@ -88,6 +88,26 @@ const api: ElectronAPI = {
     ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_SMART),
   getSmartShelfBooks: (smartShelfId: string) =>
     ipcRenderer.invoke(IPC_CHANNELS.SHELVES_GET_SMART_BOOKS, smartShelfId),
+  
+  // Updates
+  checkForUpdates: () =>
+    ipcRenderer.invoke('check-for-updates'),
+  downloadUpdate: () =>
+    ipcRenderer.invoke('download-update'),
+  installUpdate: () =>
+    ipcRenderer.invoke('install-update'),
+  onUpdateAvailable: (callback: (info: any) => void) => {
+    ipcRenderer.on('update-available', (_, info) => callback(info));
+  },
+  onUpdateDownloaded: (callback: (info: any) => void) => {
+    ipcRenderer.on('update-downloaded', (_, info) => callback(info));
+  },
+  onUpdateProgress: (callback: (progress: any) => void) => {
+    ipcRenderer.on('update-progress', (_, progress) => callback(progress));
+  },
+  onUpdateError: (callback: (error: string) => void) => {
+    ipcRenderer.on('update-error', (_, error) => callback(error));
+  },
 };
 
 contextBridge.exposeInMainWorld('api', api);

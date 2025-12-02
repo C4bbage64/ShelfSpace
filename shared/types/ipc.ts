@@ -114,6 +114,15 @@ export interface ElectronAPI {
   getBookShelves: (bookId: string) => Promise<Shelf[]>;
   getSmartShelves: () => Promise<ShelfWithBookCount[]>;
   getSmartShelfBooks: (smartShelfId: string) => Promise<Book[]>;
+  
+  // Updates
+  checkForUpdates: () => Promise<any>;
+  downloadUpdate: () => Promise<any>;
+  installUpdate: () => void;
+  onUpdateAvailable: (callback: (info: any) => void) => void;
+  onUpdateDownloaded: (callback: (info: any) => void) => void;
+  onUpdateProgress: (callback: (progress: any) => void) => void;
+  onUpdateError: (callback: (error: string) => void) => void;
 }
 
 // Augment window object

@@ -67,5 +67,9 @@
     "icon": "resources/icons",
     "category": "Office"
   },
-  "publish": null
+  "publish": {
+    "provider": "github",
+    "owner": "C4bbage64",
+    "repo": "shelfspace"
+  }
 }
