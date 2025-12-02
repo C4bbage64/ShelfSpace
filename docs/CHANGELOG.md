@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Reader Settings Panel**: Font size, font family, line height, theme (light/dark/sepia), text alignment, and margins
+- **Floating Selection Toolbar**: Quick highlight creation with color picker when selecting text
+- **Bookmarks (EPUB)**: Add/remove bookmarks with dropdown list to view and navigate
+- **Search in Book (EPUB)**: In-book search with Ctrl+F, result navigation, and highlighted matches
+- **Keyboard Shortcuts**: Full keyboard navigation with `?` help modal
+  - Navigation: Arrow keys, Page Up/Down, Space
+  - Features: Ctrl+F (search), Ctrl+B (bookmark), Ctrl+H (highlights), Ctrl+T (TOC)
+  - Zoom: Ctrl++/-, Ctrl+0 (reset)
+  - Settings: Ctrl+,
+- **EPUBReader ref API**: Exposed goNext, goPrev, goTo, search methods via forwardRef
+- **Chapter tracking**: Current chapter name passed to Reader component
 - **Multi-format reader**: PDF, EPUB, and TXT support
 - **Library management**: Import books via drag-and-drop or file picker
 - **Automatic metadata extraction**: Title, author, page count from PDF/EPUB

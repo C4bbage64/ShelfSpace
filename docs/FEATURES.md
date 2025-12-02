@@ -17,10 +17,13 @@ ShelfSpace is an offline-first desktop reading application that supports PDF, EP
 
 #### EPUB Reader
 - Reflowable text rendering via EPUB.js
-- Chapter navigation
+- Chapter navigation with current chapter display
 - Font size adjustment
 - Night mode support
 - Responsive layout
+- **In-book search** with result navigation (Ctrl+F)
+- **Bookmarks** with quick add/remove and bookmark list
+- **Ref-based API** for programmatic control
 
 #### TXT Reader
 - Clean text display
@@ -76,16 +79,49 @@ ShelfSpace is an offline-first desktop reading application that supports PDF, EP
 
 #### Highlights
 - Text selection in PDF and EPUB
+- **Floating selection toolbar** for quick highlighting
 - 5 color options:
   - Yellow (default)
   - Green
   - Blue
   - Pink
   - Orange
-- Side panel for managing highlights
+- Side panel for managing highlights (Ctrl+H)
 - View all highlights for current book
 - Delete individual highlights
 - Location references for quick navigation
+
+#### Reader Settings
+- **Font Size**: 12-32px with +/- controls
+- **Font Family**: Georgia, Times New Roman, Arial, Verdana, System
+- **Line Height**: 1.2-2.5 adjustable
+- **Theme**: Light, Dark, Sepia modes
+- **Text Alignment**: Left, Center, Justify
+- **Margins**: 20-100px adjustable
+- Settings persist via localStorage
+
+#### Bookmarks (EPUB)
+- Quick bookmark toggle button
+- Dropdown list of all bookmarks
+- Navigate to any bookmark
+- Remove bookmarks with one click
+- Shows chapter name and timestamp
+
+#### Search in Book (EPUB)
+- Real-time search with Ctrl+F
+- Result count and navigation
+- Highlighted search terms in results
+- Navigate between results (Enter/Shift+Enter)
+- Chapter context for each result
+
+#### Keyboard Shortcuts
+- Full keyboard navigation support
+- Press `?` to view all shortcuts
+- **Navigation**: Arrow keys, Page Up/Down, Space
+- **Features**: Ctrl+F (search), Ctrl+B (bookmark), Ctrl+H (highlights)
+- **Zoom**: Ctrl++, Ctrl+-, Ctrl+0
+- **Settings**: Ctrl+,
+- **Close/Back**: Escape
 
 #### Notes (Coming Soon)
 - Create text notes at any location

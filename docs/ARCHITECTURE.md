@@ -97,7 +97,7 @@ window.api.saveProgress()
 
 #### Readers (`/src/readers`)
 - `PDFReader.tsx` - PDF.js implementation with text layer
-- `EPUBReader.tsx` - EPUB.js implementation
+- `EPUBReader.tsx` - EPUB.js implementation with forwardRef API
 - `TXTReader.tsx` - Plain text reader
 
 #### Components
@@ -107,6 +107,11 @@ window.api.saveProgress()
 - `AddShelfModal.tsx` - Shelf creation modal
 - `EditBookModal.tsx` - Book metadata editor
 - `HighlightPanel.tsx` - Highlights sidebar
+- `SelectionToolbar.tsx` - Floating toolbar for text selection/highlighting
+- `ReaderSettings.tsx` - Reader preferences panel (font, theme, margins)
+- `BookmarkButton.tsx` - Bookmark toggle with dropdown list
+- `SearchInBook.tsx` - In-book search for EPUB
+- `KeyboardShortcuts.tsx` - Keyboard shortcuts help modal
 - `SearchBar.tsx` - Search input
 - `Sidebar.tsx` - Navigation
 
