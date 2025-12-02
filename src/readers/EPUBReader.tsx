@@ -1,14 +1,24 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useImperativeHandle, forwardRef } from 'react';
 import ePub, { Book, Rendition } from 'epubjs';
 import './EPUBReader.css';
 
 interface EPUBReaderProps {
   fileData: string; // base64 encoded
   initialLocation?: string;
-  onProgressUpdate: (location: string, percentage: number) => void;
+  onProgressUpdate: (location: string, percentage: number, chapter?: string) => void;
 }
 
-function EPUBReader({ fileData, initialLocation, onProgressUpdate }: EPUBReaderProps) {
+export interface EPUBReaderRef {
+  goNext: () => void;
+  goPrev: () => void;
+  goTo: (cfi: string) => void;
+  search: (query: string) => Promise<Array<{ cfi: string; excerpt: string; chapter?: string }>>;
+}
+
+const EPUBReader = forwardRef<EPUBReaderRef, EPUBReaderProps>(function EPUBReader(
+  { fileData, initialLocation, onProgressUpdate },
+  ref
+) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<Book | null>(null);
   const renditionRef = useRef<Rendition | null>(null);
@@ -62,16 +72,19 @@ function EPUBReader({ fileData, initialLocation, onProgressUpdate }: EPUBReaderP
           const percentage = location.start.percentage * 100;
           
           setProgress(percentage);
-          onProgressUpdate(cfi, percentage);
 
           // Update current chapter
+          let chapterName: string | undefined;
           const currentSection = book.spine.get(cfi);
           if (currentSection) {
             const navItem = book.navigation.get(currentSection.href);
             if (navItem) {
+              chapterName = navItem.label;
               setCurrentChapter(navItem.label);
             }
           }
+          
+          onProgressUpdate(cfi, percentage, chapterName);
         });
 
         setIsLoading(false);
@@ -101,6 +114,47 @@ function EPUBReader({ fileData, initialLocation, onProgressUpdate }: EPUBReaderP
   const prevPage = useCallback(() => {
     renditionRef.current?.prev();
   }, []);
+
+  const goTo = useCallback((cfi: string) => {
+    renditionRef.current?.display(cfi);
+  }, []);
+
+  const search = useCallback(async (query: string) => {
+    if (!bookRef.current) return [];
+    
+    const results: Array<{ cfi: string; excerpt: string; chapter?: string }> = [];
+    
+    try {
+      const spine = bookRef.current.spine;
+      // @ts-ignore - epubjs types are incomplete
+      for (const item of spine.items) {
+        // @ts-ignore
+        const doc = await item.load(bookRef.current.load.bind(bookRef.current));
+        // @ts-ignore
+        const searchResults = await item.find(query);
+        
+        for (const result of searchResults) {
+          results.push({
+            cfi: result.cfi,
+            excerpt: result.excerpt,
+            chapter: item.label || undefined,
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Search failed:', err);
+    }
+    
+    return results;
+  }, []);
+
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    goNext: nextPage,
+    goPrev: prevPage,
+    goTo,
+    search,
+  }), [nextPage, prevPage, goTo, search]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -189,6 +243,6 @@ function EPUBReader({ fileData, initialLocation, onProgressUpdate }: EPUBReaderP
       </div>
     </div>
   );
-}
+});
 
 export default EPUBReader;
