@@ -5,6 +5,8 @@ node_modules/
 dist/
 dist-electron/
 release/
+build-output/
+release_old*/
 
 # Logs
 logs/

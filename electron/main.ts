@@ -25,7 +25,7 @@ async function createWindow(): Promise<void> {
     title: 'ShelfSpace',
     backgroundColor: '#1a1a2e',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, './preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false, // Required for better-sqlite3
@@ -42,8 +42,11 @@ async function createWindow(): Promise<void> {
     await mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
-    // Load from built files
-    await mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    // Load from built files - corrected path for packaged app
+    const indexPath = path.join(__dirname, '../../dist/index.html');
+    await mainWindow.loadFile(indexPath);
+    // Open DevTools for debugging
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {

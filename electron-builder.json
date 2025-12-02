@@ -4,15 +4,14 @@
   "productName": "ShelfSpace",
   "copyright": "Copyright © 2025 ShelfSpace",
   "directories": {
-    "output": "release",
-    "buildResources": "resources"
+    "output": "build-output"
   },
   "files": [
     "dist/**/*",
     "dist-electron/**/*"
   ],
   "extraMetadata": {
-    "main": "dist-electron/main.js"
+    "main": "dist-electron/electron/main.js"
   },
   "win": {
     "target": [
@@ -20,8 +19,7 @@
         "target": "nsis",
         "arch": ["x64"]
       }
-    ],
-    "icon": "resources/icons/icon.ico"
+    ]
   },
   "nsis": {
     "oneClick": false,
@@ -36,7 +34,6 @@
         "arch": ["x64", "arm64"]
       }
     ],
-    "icon": "resources/icons/icon.icns",
     "category": "public.app-category.productivity"
   },
   "dmg": {
@@ -64,7 +61,6 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "resources/icons",
     "category": "Office"
   },
   "publish": {
