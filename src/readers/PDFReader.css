@@ -27,8 +27,17 @@
   gap: var(--space-xs);
 }
 
+.pdf-sidebar-toggles {
+  padding-right: var(--space-sm);
+  border-right: 1px solid var(--border);
+  margin-right: var(--space-sm);
+}
+
 .pdf-controls {
   gap: var(--space-sm);
+  padding-left: var(--space-sm);
+  border-left: 1px solid var(--border);
+  margin-left: var(--space-sm);
 }
 
 .pdf-zoom,
@@ -40,6 +49,24 @@
   padding: 3px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
+}
+
+/* Buttons inside grouped controls */
+.pdf-zoom .btn,
+.pdf-view-mode .btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+}
+
+.pdf-zoom .btn:hover,
+.pdf-view-mode .btn:hover {
+  background: var(--bg-secondary);
+}
+
+.pdf-view-mode .btn.active {
+  background: var(--accent);
+  color: white;
 }
 
 .pdf-body {
@@ -68,6 +95,11 @@
 .pdf-toolbar .btn:hover {
   background: var(--bg-tertiary);
   color: var(--text-primary);
+}
+
+.pdf-toolbar .btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .pdf-toolbar .btn.active {
@@ -140,6 +172,16 @@
   min-width: 44px;
   text-align: center;
   font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.zoom-level-btn {
+  width: auto !important;
+  padding: 0 var(--space-xs) !important;
+}
+
+.zoom-level-btn:hover .zoom-level {
+  color: var(--accent);
 }
 
 /* Main content container */
@@ -149,9 +191,18 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: var(--space-lg);
   background: var(--bg-tertiary);
   position: relative;
+}
+
+/* Single page mode padding */
+.pdf-container:has(.pdf-page-wrapper) {
+  padding: var(--space-lg);
+}
+
+/* Continuous mode - no padding, scroll container handles it */
+.pdf-container:has(.pdf-continuous-container) {
+  padding: 0;
 }
 
 /* Single page wrapper */
@@ -176,7 +227,6 @@
   overflow: hidden;
   line-height: 1;
   z-index: 2;
-  opacity: 0.2;
 }
 
 .pdf-page-wrapper .textLayer span {
@@ -197,7 +247,9 @@
   align-items: center;
   gap: var(--space-lg);
   padding: var(--space-lg);
+  width: 100%;
   min-height: 100%;
+  box-sizing: border-box;
 }
 
 .pdf-page-continuous {
@@ -217,7 +269,6 @@
   overflow: hidden;
   line-height: 1;
   z-index: 2;
-  opacity: 0.2;
 }
 
 .pdf-page-continuous .textLayer span {

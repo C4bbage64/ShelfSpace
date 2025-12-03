@@ -71,38 +71,42 @@ export function PDFThumbnails({
 
   // Set up intersection observer for lazy loading
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !containerRef.current) return;
 
-    observerRef.current = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const pageNum = parseInt(entry.target.getAttribute('data-page') || '0', 10);
-            if (pageNum > 0) {
+            if (pageNum > 0 && !thumbnails[pageNum]) {
               generateThumbnail(pageNum);
             }
           }
         });
       },
-      { root: containerRef.current, rootMargin: '100px' }
+      { root: containerRef.current, rootMargin: '200px', threshold: 0 }
     );
+    
+    observerRef.current = observer;
+
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      if (!containerRef.current) return;
+      
+      // Observe all thumbnail items
+      const items = containerRef.current.querySelectorAll('.thumbnail-item');
+      items.forEach(el => observer.observe(el));
+      
+      // Generate first few thumbnails immediately
+      for (let i = 1; i <= Math.min(6, pdf.numPages); i++) {
+        generateThumbnail(i);
+      }
+    });
 
     return () => {
-      observerRef.current?.disconnect();
+      observer.disconnect();
     };
-  }, [isOpen, generateThumbnail]);
-
-  // Observe thumbnail placeholders
-  useEffect(() => {
-    if (!isOpen || !containerRef.current || !observerRef.current) return;
-
-    const placeholders = containerRef.current.querySelectorAll('.thumbnail-item');
-    placeholders.forEach(el => observerRef.current?.observe(el));
-
-    return () => {
-      placeholders.forEach(el => observerRef.current?.unobserve(el));
-    };
-  }, [isOpen, pdf.numPages]);
+  }, [isOpen, generateThumbnail, pdf.numPages, thumbnails]);
 
   // Scroll to current page thumbnail
   useEffect(() => {

@@ -216,32 +216,50 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
 
   // Set up continuous scroll mode
   useEffect(() => {
-    if (viewMode !== 'continuous' || !pdf || !continuousContainerRef.current) return;
+    if (viewMode !== 'continuous' || !pdf || !continuousContainerRef.current || !containerRef.current) return;
 
-    const container = continuousContainerRef.current;
+    const pagesContainer = continuousContainerRef.current;
+    const scrollContainer = containerRef.current;
+    const renderedPages = new Set<number>();
     
     // Clear existing pages when switching to continuous mode or scale changes
-    container.innerHTML = '';
+    pagesContainer.innerHTML = '';
+    renderedPages.clear();
+    
+    // Render a page and track it
+    const renderPage = (pageNum: number) => {
+      if (renderedPages.has(pageNum)) return;
+      renderedPages.add(pageNum);
+      renderPageForContinuous(pageNum, pagesContainer);
+    };
     
     // Initially render visible pages
     const renderVisiblePages = () => {
-      const containerRect = container.getBoundingClientRect();
-      const scrollTop = container.scrollTop;
-      const viewportHeight = containerRect.height;
+      const scrollTop = scrollContainer.scrollTop;
+      const viewportHeight = scrollContainer.clientHeight;
       
-      // Estimate which pages should be visible (use reasonable estimate)
-      const estimatedPageHeight = Math.max(500, (containerRect.width * 0.6) * 1.3);
-      const startPage = Math.max(1, Math.floor(scrollTop / estimatedPageHeight));
-      const endPage = Math.min(pdf.numPages, Math.ceil((scrollTop + viewportHeight) / estimatedPageHeight) + 3);
+      // Calculate based on actual rendered pages if available
+      const renderedPageElements = pagesContainer.querySelectorAll('.pdf-page-continuous');
+      let avgPageHeight = 800; // default estimate
+      
+      if (renderedPageElements.length > 0) {
+        let totalHeight = 0;
+        renderedPageElements.forEach(el => totalHeight += (el as HTMLElement).offsetHeight);
+        avgPageHeight = totalHeight / renderedPageElements.length;
+      }
+      
+      // Calculate visible page range with buffer
+      const startPage = Math.max(1, Math.floor(scrollTop / (avgPageHeight + 24)) - 1);
+      const endPage = Math.min(pdf.numPages, Math.ceil((scrollTop + viewportHeight) / (avgPageHeight + 24)) + 2);
       
       for (let i = startPage; i <= endPage; i++) {
-        renderPageForContinuous(i, container);
+        renderPage(i);
       }
     };
 
     // Initial render - render first few pages
-    for (let i = 1; i <= Math.min(3, pdf.numPages); i++) {
-      renderPageForContinuous(i, container);
+    for (let i = 1; i <= Math.min(5, pdf.numPages); i++) {
+      renderPage(i);
     }
     
     // Render more pages on scroll
@@ -249,18 +267,18 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
       renderVisiblePages();
       
       // Update current page based on scroll position
-      const pages = container.querySelectorAll('.pdf-page-continuous');
-      const scrollTop = container.scrollTop;
-      const viewportCenter = scrollTop + container.clientHeight / 2;
+      const pages = pagesContainer.querySelectorAll('.pdf-page-continuous');
+      const containerTop = scrollContainer.getBoundingClientRect().top;
       
       let closestPage = 1;
       let closestDistance = Infinity;
       
       pages.forEach(page => {
         const rect = (page as HTMLElement).getBoundingClientRect();
-        const pageTop = rect.top - container.getBoundingClientRect().top + scrollTop;
+        const pageTop = rect.top - containerTop;
         const pageCenter = pageTop + rect.height / 2;
-        const distance = Math.abs(viewportCenter - pageCenter);
+        const viewportCenter = scrollContainer.clientHeight / 2;
+        const distance = Math.abs(pageCenter - viewportCenter);
         
         if (distance < closestDistance) {
           closestDistance = distance;
@@ -273,10 +291,10 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
       }
     };
     
-    container.addEventListener('scroll', handleScroll);
+    scrollContainer.addEventListener('scroll', handleScroll);
     
     return () => {
-      container.removeEventListener('scroll', handleScroll);
+      scrollContainer.removeEventListener('scroll', handleScroll);
     };
   }, [viewMode, pdf, scale, renderPageForContinuous, currentPage]);
 
@@ -293,16 +311,20 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
     setCurrentPage(targetPage);
     
     // In continuous mode, ensure page is rendered then scroll to it
-    if (viewMode === 'continuous' && continuousContainerRef.current && pdf) {
-      const container = continuousContainerRef.current;
+    if (viewMode === 'continuous' && continuousContainerRef.current && containerRef.current && pdf) {
+      const pagesContainer = continuousContainerRef.current;
+      const scrollContainer = containerRef.current;
       
       // Render the target page if not already rendered
-      await renderPageForContinuous(targetPage, container);
+      await renderPageForContinuous(targetPage, pagesContainer);
       
-      // Wait a tick for DOM to update
+      // Wait a tick for DOM to update then scroll
       requestAnimationFrame(() => {
-        const pageElement = container.querySelector(`[data-page="${targetPage}"]`);
-        pageElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const pageElement = pagesContainer.querySelector(`[data-page="${targetPage}"]`);
+        if (pageElement) {
+          const pageTop = (pageElement as HTMLElement).offsetTop;
+          scrollContainer.scrollTo({ top: pageTop - 16, behavior: 'smooth' });
+        }
       });
     }
   }, [numPages, viewMode, pdf, renderPageForContinuous]);
@@ -316,7 +338,7 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
   }, [currentPage, goToPage]);
 
   const zoomIn = useCallback(() => {
-    setScale((s) => Math.min(s + 0.25, 3));
+    setScale((s) => Math.min(s + 0.25, 4));
     // Clear continuous scroll container to re-render at new scale
     if (continuousContainerRef.current) {
       continuousContainerRef.current.innerHTML = '';
@@ -330,6 +352,24 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
       continuousContainerRef.current.innerHTML = '';
     }
   }, []);
+
+  const fitToWidth = useCallback(async () => {
+    if (!pdf || !containerRef.current) return;
+    
+    try {
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 1 });
+      const containerWidth = containerRef.current.clientWidth - 48; // Account for padding
+      const newScale = containerWidth / viewport.width;
+      setScale(Math.min(Math.max(newScale, 0.5), 4));
+      
+      if (continuousContainerRef.current) {
+        continuousContainerRef.current.innerHTML = '';
+      }
+    } catch (err) {
+      console.error('Failed to fit to width:', err);
+    }
+  }, [pdf]);
 
   // Expose methods via ref
   useImperativeHandle(ref, () => ({
@@ -364,6 +404,18 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
             prevPage();
           }
           break;
+        case 'Home':
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            goToPage(1);
+          }
+          break;
+        case 'End':
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            goToPage(numPages);
+          }
+          break;
         case '+':
         case '=':
           if (e.ctrlKey || e.metaKey) {
@@ -382,7 +434,7 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [nextPage, prevPage, zoomIn, zoomOut, viewMode]);
+  }, [nextPage, prevPage, zoomIn, zoomOut, viewMode, goToPage, numPages]);
 
   const toggleSidebar = (mode: SidebarMode) => {
     setSidebarMode(prev => prev === mode ? 'none' : mode);
@@ -478,15 +530,17 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
         {/* Right side - zoom and view mode */}
         <div className="pdf-controls">
           <div className="pdf-zoom">
-            <button className="btn btn-ghost" onClick={zoomOut} title="Zoom out">
+            <button className="btn btn-ghost" onClick={zoomOut} title="Zoom out (Ctrl+-)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 <line x1="8" y1="11" x2="14" y2="11" />
               </svg>
             </button>
-            <span className="zoom-level">{Math.round(scale * 100)}%</span>
-            <button className="btn btn-ghost" onClick={zoomIn} title="Zoom in">
+            <button className="btn btn-ghost zoom-level-btn" onClick={fitToWidth} title="Fit to width">
+              <span className="zoom-level">{Math.round(scale * 100)}%</span>
+            </button>
+            <button className="btn btn-ghost" onClick={zoomIn} title="Zoom in (Ctrl++)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -563,17 +617,17 @@ const PDFReader = forwardRef<PDFReaderRef, PDFReaderProps>(function PDFReader(
           ) : (
             <div className="pdf-continuous-container" ref={continuousContainerRef} />
           )}
-
-          {/* Search overlay - positioned within content area */}
-          {pdf && (
-            <PDFSearch
-              pdf={pdf}
-              isOpen={showSearch}
-              onClose={() => setShowSearch(false)}
-              onNavigate={goToPage}
-            />
-          )}
         </div>
+
+        {/* Search overlay - positioned within body, outside scrollable area */}
+        {pdf && (
+          <PDFSearch
+            pdf={pdf}
+            isOpen={showSearch}
+            onClose={() => setShowSearch(false)}
+            onNavigate={goToPage}
+          />
+        )}
       </div>
     </div>
   );

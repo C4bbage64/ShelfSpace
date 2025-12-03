@@ -1,9 +1,9 @@
 .pdf-search {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 400px;
-  max-width: calc(100% - 16px);
+  top: 12px;
+  right: 12px;
+  width: 380px;
+  max-width: calc(100% - 200px);
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 12px;
