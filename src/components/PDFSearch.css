@@ -1,0 +1,195 @@
+.pdf-search {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 400px;
+  max-width: calc(100% - 16px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  animation: searchSlide 0.2s ease;
+  overflow: hidden;
+}
+
+@keyframes searchSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pdf-search .search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pdf-search .search-icon {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.pdf-search .search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.pdf-search .search-bar input::placeholder {
+  color: var(--text-secondary);
+}
+
+.pdf-search .clear-btn {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.pdf-search .clear-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.pdf-search .search-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+
+.pdf-search .result-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.pdf-search .nav-btn,
+.pdf-search .search-actions .close-btn {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.pdf-search .nav-btn:hover:not(:disabled),
+.pdf-search .search-actions .close-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.pdf-search .nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.search-progress {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-progress span {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.search-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.search-results {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.search-result {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.search-result:last-child {
+  border-bottom: none;
+}
+
+.search-result:hover {
+  background: var(--bg-tertiary);
+}
+
+.search-result.active {
+  background: rgba(var(--accent-rgb), 0.1);
+  border-left: 3px solid var(--accent);
+}
+
+.result-page {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.result-text {
+  display: block;
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.result-text mark {
+  background: rgba(var(--accent-rgb), 0.3);
+  color: var(--text-primary);
+  border-radius: 2px;
+  padding: 0 2px;
+}
